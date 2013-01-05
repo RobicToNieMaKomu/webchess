@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <title>WebChess</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" media="all" href="../../css/stsm.css" th:href="@{/css/stsm.css}"/>
+  </head>
+
+  <body>  
+    <div class="matcheslist" th:unless="${#lists.isEmpty(allMatches)}">
+    
+      <h2 th:text="#{title.list}">List of all games</h2>
+      
+      <table>
+        <thead>
+          <tr>
+            <th th:text="#{match.matchId}">Match Id</th>
+            <th th:text="#{match.progress}">Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="match : ${allMatches}">
+            <td th:text="${match.matchId}">05/01/2013</td>
+            <td th:text="${match.progress}">yes</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
