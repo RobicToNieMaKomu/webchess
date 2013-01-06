@@ -10,4 +10,5 @@ import java.util.List;
 public interface MatchService {
     
     List<Match> findAllMatches();
+    void addMatch(Match match);
 }

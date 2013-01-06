@@ -12,23 +12,31 @@ import org.springframework.stereotype.Service;
  * @author RobicToNieMaKomu
  */
 @Service("matchService")
-public class MatchServiceImpl implements MatchService{
+public class MatchServiceImpl implements MatchService {
+
+    private static int number = 2;
+    private static int count = 20;
+    List<Match> result = new ArrayList<Match>();
 
     @Override
     public List<Match> findAllMatches() {
         // TODO - add db handling
-        List<Match> result = new ArrayList<Match>();
         User user = new User();
         user.setId(1);
         user.setLogin("Zdzislaw");
-        for (int i = 0; i < 10; i++){
-            Match match = new Match();
-            match.setBplayerid(user);
-            match.setMatchId(i);
-            match.setProgress(new Long(Calendar.getInstance().getTimeInMillis()).toString());
-            result.add(match);
+        if (result.isEmpty()) {
+            for (int i = 0; i < number; i++) {
+                Match match = new Match();
+                match.setBplayerid(user);
+                match.setMatchId(i);
+                match.setProgress(new Long(Calendar.getInstance().getTimeInMillis()).toString());
+                result.add(match);
+            }
         }
         return result;
     }
-    
+
+    public void addMatch(Match match) {
+        result.add(match);
+    }
 }
