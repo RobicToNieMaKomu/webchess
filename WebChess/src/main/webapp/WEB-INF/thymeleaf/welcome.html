@@ -2,31 +2,58 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
 
-  <head>
-    <title>WebChess</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" media="all" href="../../css/stsm.css" th:href="@{/css/stsm.css}"/>
-  </head>
+    <head>
+        <title>WebChess</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" type="text/css" media="all" href="../../css/stsm.css" th:href="@{/css/stsm.css}"/>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+        <script type="text/javascript">
+            var jq = jQuery.noConflict();
+            function refresh() {
+                jq(function() {
+                    jq.post("/WebChess/",
+                    {},
+                    function(data){
+                        // data contains the result
+                        // Assign result to the sum id
+                        var listOfMatches=" ";
+                        console.log("Data is coming!: " + data);
+                        jQuery.each(data, function(i, v){
+                            var match = data[i]; 
+                            listOfMatches=listOfMatches+"<tr>";
+                            listOfMatches=listOfMatches+"<td>"+match.matchId+"</td>";
+                            listOfMatches=listOfMatches+"<td>"+match.progress+"</td>";
+                            listOfMatches=listOfMatches+"</tr>";
+                            console.log("LoM: " + listOfMatches);
+                        });
+                        console.log("Final LoM: "+listOfMatches);
+                        jQuery("#currentMatches").html(listOfMatches);
+                    });
+                });
+                setTimeout(function(){refresh()},5000);
+            }
+        </script>
+    </head>
 
-  <body>  
-    <div class="matcheslist" th:unless="${#lists.isEmpty(allMatches)}">
-    
-      <h2 th:text="#{title.list}">List of all games</h2>
-      
-      <table>
-        <thead>
-          <tr>
-            <th th:text="#{match.matchId}">Match Id</th>
-            <th th:text="#{match.progress}">Progress</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="match : ${allMatches}">
-            <td th:text="${match.matchId}">05/01/2013</td>
-            <td th:text="${match.progress}">yes</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </body>
+    <body onload="refresh()">  
+        <div class="matcheslist" th:unless="${#lists.isEmpty(allMatches)}">
+
+            <h2 th:text="#{title.list}">List of all games</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th th:text="#{match.matchId}">Match Id</th>
+                        <th th:text="#{match.progress}">Progress</th>
+                    </tr>
+                </thead>
+                <tbody id="currentMatches">
+                    <tr th:each="match : ${allMatches}">
+                        <td th:text="${match.matchId}">05/01/2013</td>
+                        <td th:text="${match.progress}">yes</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </body>
 </html>
