@@ -14,19 +14,15 @@
                     jq.post("/WebChess/",
                     {},
                     function(data){
-                        // data contains the result
-                        // Assign result to the sum id
+                        // data contains the result list
                         var listOfMatches=" ";
-                        console.log("Data is coming!: " + data);
                         jQuery.each(data, function(i, v){
                             var match = data[i]; 
                             listOfMatches=listOfMatches+"<tr>";
                             listOfMatches=listOfMatches+"<td>"+match.matchId+"</td>";
                             listOfMatches=listOfMatches+"<td>"+match.progress+"</td>";
                             listOfMatches=listOfMatches+"</tr>";
-                            console.log("LoM: " + listOfMatches);
                         });
-                        console.log("Final LoM: "+listOfMatches);
                         jQuery("#currentMatches").html(listOfMatches);
                     });
                 });
@@ -54,6 +50,5 @@
                 </tbody>
             </table>
         </div>
-        
     </body>
 </html>
