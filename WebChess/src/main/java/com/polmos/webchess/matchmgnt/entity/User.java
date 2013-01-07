@@ -16,10 +16,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -35,20 +34,20 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
     @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email")})
 public class User implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "wplayerid", fetch = FetchType.EAGER)
+    private List<ChessTable> chessTableList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bplayerid", fetch = FetchType.EAGER)
+    private List<ChessTable> chessTableList1;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @NotNull
     @Column(name = "id")
     private Integer id;
-    @Size(max = 2147483647)
     @Column(name = "login")
     private String login;
-    @Size(max = 2147483647)
     @Column(name = "password")
     private String password;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    @Size(max = 2147483647)
     @Column(name = "email")
     private String email;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "bplayerid", fetch = FetchType.EAGER)
@@ -136,6 +135,26 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "com.polmos.webchess.matchmgnt.entity.User[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public List<ChessTable> getChessTableList() {
+        return chessTableList;
+    }
+
+    public void setChessTableList(List<ChessTable> chessTableList) {
+        this.chessTableList = chessTableList;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public List<ChessTable> getChessTableList1() {
+        return chessTableList1;
+    }
+
+    public void setChessTableList1(List<ChessTable> chessTableList1) {
+        this.chessTableList1 = chessTableList1;
     }
     
 }
