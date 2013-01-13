@@ -15,15 +15,18 @@
   <!--  RESOURCE FOLDERS CONFIGURATION                                  -->
   <!--  Dispatcher configuration for serving static resources           -->
   <!-- **************************************************************** -->
-  <!--<mvc:resources location="/images/" mapping="/images/**" /> -->
-  <mvc:resources location="/css/" mapping="/css/**" />
-  <context:component-scan base-package="com.polmos.webchess.matchmgnt.service" />  
+  <!--<mvc:resources location="/images/" mapping="/images/**" />-->
+  <mvc:resources location="/assets/css/" mapping="/css/**" />
+  <mvc:resources location="/assets/img/" mapping="/img/**" />
+  <mvc:resources location="/assets/js/" mapping="/js/**" />
+  
   <context:component-scan base-package="com.polmos.webchess.web.controllers" />
   <!-- **************************************************************** -->
   <!--  SPRING ANNOTATION PROCESSING                                    -->
   <!-- **************************************************************** -->
+  <mvc:default-servlet-handler default-servlet-name="spring"/>
   <mvc:annotation-driven />
-  <!--<context:annotation-config /> -->
+  <context:annotation-config />
 
 
   <!-- **************************************************************** -->

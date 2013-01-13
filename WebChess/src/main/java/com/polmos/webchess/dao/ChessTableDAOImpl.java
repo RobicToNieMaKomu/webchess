@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -13,23 +14,33 @@ import org.springframework.transaction.annotation.Transactional;
  * @author RobicToNieMaKomu
  */
 @Transactional
+@Service("chessTableDAO")
 public class ChessTableDAOImpl implements ChessTableDAO {
 
     private static Logger logger = Logger.getLogger(UserDAOImpl.class);
     @PersistenceContext
     private EntityManager entityManager;
 
-    public void saveChessTable(ChessTable chessTable) {
+    public Integer createChessTable(ChessTable chessTable) {
         entityManager.persist(chessTable);
+        entityManager.flush();
+        Integer tableId = chessTable.getTableId();
+        return tableId;
+    }
+    
+    public void updateChessTable(ChessTable chessTable) {
+        if (entityManager.find(ChessTable.class, chessTable.getTableId()) != null) {
+            entityManager.persist(chessTable);
+        }
     }
 
-    public ChessTable findMatchById(Integer id) {
+    public ChessTable findChessTableById(Integer id) {
         ChessTable result = entityManager.find(ChessTable.class, id);
         return result;
     }
 
     public List<ChessTable> findAllChessTables() {
-        Query createNamedQuery = entityManager.createNamedQuery("Match.findAll");
+        Query createNamedQuery = entityManager.createNamedQuery("ChessTable.findAll");
         List<ChessTable> result = createNamedQuery.getResultList();
         return result;
     }

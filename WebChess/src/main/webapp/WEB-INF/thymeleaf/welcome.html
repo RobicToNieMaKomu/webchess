@@ -5,50 +5,87 @@
     <head>
         <title>WebChess</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <link rel="stylesheet" type="text/css" media="all" href="../../css/stsm.css" th:href="@{/css/stsm.css}"/>
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <!--<link rel="stylesheet" type="text/css" media="all" href="../../css/stsm.css" th:href="@{/css/stsm.css}"/>!-->
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-        <script type="text/javascript">
-            var jq = jQuery.noConflict();
-            function refresh() {
-                jq(function() {
-                    jq.post("/WebChess/",
-                    {},
-                    function(data){
-                        // data contains the result list
-                        var listOfMatches=" ";
-                        jQuery.each(data, function(i, v){
-                            var match = data[i]; 
-                            listOfMatches=listOfMatches+"<tr>";
-                            listOfMatches=listOfMatches+"<td>"+match.matchId+"</td>";
-                            listOfMatches=listOfMatches+"<td>"+match.progress+"</td>";
-                            listOfMatches=listOfMatches+"</tr>";
-                        });
-                        jQuery("#currentMatches").html(listOfMatches);
-                    });
-                });
-                setTimeout(function(){refresh()},5000);
+        <link href="/WebChess/css/bootstrap.css" rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+        <style>
+            body {
+                padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
             }
-        </script>
+        </style>
+        <link href="/WebChess/css/bootstrap-responsive.css" rel="stylesheet" th:href="@{/css/bootstrap-responsive.css}"/>
+        <!-- Fav and touch icons -->
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png" />
+        <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png" />
+        <link rel="shortcut icon" href="../assets/ico/favicon.png" />
     </head>
 
     <body onload="refresh()">  
-        <div class="matcheslist" th:unless="${#lists.isEmpty(allMatches)}">
-
-            <h2 th:text="#{title.list}">List of all games</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th th:text="#{match.matchId}">Match Id</th>
-                        <th th:text="#{match.progress}">Progress</th>
-                    </tr>
-                </thead>
-                <tbody id="currentMatches">
-                    <tr th:each="match : ${allMatches}">
-                        <td th:text="${match.matchId}">05/01/2013</td>
-                        <td th:text="${match.progress}">yes</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="#" th:text="#{title.application}">Project name</a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav" id="right">
+                            <li class="active"><a href="#">Home</a></li>
+                            <li><a href="#about">About</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>
         </div>
+
+        <div class="container" th:unless="${#lists.isEmpty(allChessTables)}">
+
+            <h2 th:text="#{title.list}">All available chess tables</h2>
+            <div class="row">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th th:text="#{chess_table.tableId}">Id</th>
+                            <th th:text="#{chess_table.wPlayer}">White</th>
+                            <th th:text="#{chess_table.bPlayer}">Black</th>
+                            <th th:text="#{chess_table.gameTime}">Time duration</th>
+                        </tr>
+                    </thead>
+                    <tbody id="currentChessTables">
+                        <tr th:each="table : ${allChessTables}">
+                            <th th:text="${table.tableId}">0</th>
+                            <th th:text="${table.wplayer}">__</th>
+                            <th th:text="${table.bplayer}">__</th>
+                            <th th:text="${table.gameTime}">5:00</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn btn-primary" type="button">Create new game</button>
+        </div>
+        <script type="text/javascript" src="/WebChess/js/ajax-handler.js"></script>
+        <!-- Le javascript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="../assets/js/jquery.js"></script>
+        <script src="../assets/js/bootstrap-transition.js"></script>
+        <script src="../assets/js/bootstrap-alert.js"></script>
+        <script src="../assets/js/bootstrap-modal.js"></script>
+        <script src="../assets/js/bootstrap-dropdown.js"></script>
+        <script src="../assets/js/bootstrap-scrollspy.js"></script>
+        <script src="../assets/js/bootstrap-tab.js"></script>
+        <script src="../assets/js/bootstrap-tooltip.js"></script>
+        <script src="../assets/js/bootstrap-popover.js"></script>
+        <script src="../assets/js/bootstrap-button.js"></script>
+        <script src="../assets/js/bootstrap-collapse.js"></script>
+        <script src="../assets/js/bootstrap-carousel.js"></script>
+        <script src="../assets/js/bootstrap-typeahead.js"></script>
     </body>
 </html>

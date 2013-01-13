@@ -10,6 +10,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -35,22 +37,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ChessTable implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Basic(optional = false)
     @Column(name = "table_id")
     private Integer tableId;
-    @Basic(optional = false)
     @Column(name = "game_time")
-    private int gameTime;
+    private Integer gameTime;
     @Basic(optional = false)
     @Column(name = "last_visit_timestamp")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastVisitTimestamp;
-    @JoinColumn(name = "wplayerid", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    private User wplayerid;
-    @JoinColumn(name = "bplayerid", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    private User bplayerid;
+    @JoinColumn(name = "wplayer", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User wplayer;
+    @JoinColumn(name = "bplayer", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User bplayer;
 
     public ChessTable() {
     }
@@ -59,9 +61,8 @@ public class ChessTable implements Serializable {
         this.tableId = tableId;
     }
 
-    public ChessTable(Integer tableId, int gameTime, Date lastVisitTimestamp) {
+    public ChessTable(Integer tableId, Date lastVisitTimestamp) {
         this.tableId = tableId;
-        this.gameTime = gameTime;
         this.lastVisitTimestamp = lastVisitTimestamp;
     }
 
@@ -73,11 +74,11 @@ public class ChessTable implements Serializable {
         this.tableId = tableId;
     }
 
-    public int getGameTime() {
+    public Integer getGameTime() {
         return gameTime;
     }
 
-    public void setGameTime(int gameTime) {
+    public void setGameTime(Integer gameTime) {
         this.gameTime = gameTime;
     }
 
@@ -89,20 +90,20 @@ public class ChessTable implements Serializable {
         this.lastVisitTimestamp = lastVisitTimestamp;
     }
 
-    public User getWplayerid() {
-        return wplayerid;
+    public User getWplayer() {
+        return wplayer;
     }
 
-    public void setWplayerid(User wplayerid) {
-        this.wplayerid = wplayerid;
+    public void setWplayer(User wplayer) {
+        this.wplayer = wplayer;
     }
 
-    public User getBplayerid() {
-        return bplayerid;
+    public User getBplayer() {
+        return bplayer;
     }
 
-    public void setBplayerid(User bplayerid) {
-        this.bplayerid = bplayerid;
+    public void setBplayer(User bplayer) {
+        this.bplayer = bplayer;
     }
 
     @Override

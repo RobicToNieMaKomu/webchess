@@ -7,7 +7,6 @@ package com.polmos.webchess.matchmgnt.entity;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,10 +33,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
     @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email")})
 public class User implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "wplayerid", fetch = FetchType.EAGER)
-    private List<ChessTable> chessTableList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bplayerid", fetch = FetchType.EAGER)
-    private List<ChessTable> chessTableList1;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -47,13 +42,12 @@ public class User implements Serializable {
     private String login;
     @Column(name = "password")
     private String password;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Column(name = "email")
     private String email;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bplayerid", fetch = FetchType.EAGER)
-    private List<Match> matchList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "wplayerid", fetch = FetchType.EAGER)
-    private List<Match> matchList1;
+    @OneToMany(mappedBy = "wplayer", fetch = FetchType.EAGER)
+    private List<ChessTable> chessTableList;
+    @OneToMany(mappedBy = "bplayer", fetch = FetchType.EAGER)
+    private List<ChessTable> chessTableList1;
 
     public User() {
     }
@@ -95,21 +89,23 @@ public class User implements Serializable {
     }
 
     @XmlTransient
-    public List<Match> getMatchList() {
-        return matchList;
+    @JsonIgnore
+    public List<ChessTable> getChessTableList() {
+        return chessTableList;
     }
 
-    public void setMatchList(List<Match> matchList) {
-        this.matchList = matchList;
+    public void setChessTableList(List<ChessTable> chessTableList) {
+        this.chessTableList = chessTableList;
     }
 
     @XmlTransient
-    public List<Match> getMatchList1() {
-        return matchList1;
+    @JsonIgnore
+    public List<ChessTable> getChessTableList1() {
+        return chessTableList1;
     }
 
-    public void setMatchList1(List<Match> matchList1) {
-        this.matchList1 = matchList1;
+    public void setChessTableList1(List<ChessTable> chessTableList1) {
+        this.chessTableList1 = chessTableList1;
     }
 
     @Override
@@ -135,26 +131,6 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "com.polmos.webchess.matchmgnt.entity.User[ id=" + id + " ]";
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public List<ChessTable> getChessTableList() {
-        return chessTableList;
-    }
-
-    public void setChessTableList(List<ChessTable> chessTableList) {
-        this.chessTableList = chessTableList;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public List<ChessTable> getChessTableList1() {
-        return chessTableList1;
-    }
-
-    public void setChessTableList1(List<ChessTable> chessTableList1) {
-        this.chessTableList1 = chessTableList1;
     }
     
 }

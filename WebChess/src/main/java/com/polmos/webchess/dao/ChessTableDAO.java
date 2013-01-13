@@ -9,11 +9,13 @@ import java.util.List;
  */
 public interface ChessTableDAO {
 
-    void saveChessTable(ChessTable chessTable);
+    Integer createChessTable(ChessTable chessTable);
 
-    ChessTable findMatchById(Integer id);
+    ChessTable findChessTableById(Integer id);
 
     List<ChessTable> findAllChessTables();
 
     void removeChessTable(ChessTable chessTable);
+    
+     public void updateChessTable(ChessTable chessTable);
 }
