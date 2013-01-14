@@ -34,15 +34,16 @@ public class ChessTablesManagerController {
     }
   
 
-    @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/allTables", "/welcome/allTables"}, method = RequestMethod.GET)
     public @ResponseBody
     List<ChessTable> showAllVisibleChessTables() {
         return chessTableService.getAllChessTables();
     }
     
     @RequestMapping(value = {"/createTable", "/welcome/createTable"}, method = RequestMethod.POST)
-    public void createChessTable() {
-        chessTableService.createNewChessTable(new Date());
+    public @ResponseBody Integer createChessTable() {
+        Integer chessTableId = chessTableService.createNewChessTable(new Date());
+        return chessTableId;
     }
     
     @RequestMapping(value = {"/main", "/welcome/main"}, method = RequestMethod.GET)
