@@ -1,0 +1,65 @@
+<html>
+    <head>
+        <title>Table number #ID</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="description" content="WebSockets in action!" />
+        <meta name="author" content="RobicToNieMaKomu" />
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <link href="/WebChess/css/bootstrap.css" rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+        <link href="/WebChess/css/custom.css" rel="stylesheet" th:href="@{/css/custom.css}"/>
+        <link href="/WebChess/css/bootstrap-responsive.css" rel="stylesheet" th:href="@{/css/bootstrap-responsive.css}"/>
+    </head>
+    <body id="minimal_dimension">
+        <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Then what are you doin here?</h2></noscript>
+        <div class="container">
+            <div class="row">
+                <div class="span8" style="background-color: #006dcc; height: 100%">
+                    <!--chessboard-->
+                </div>
+                <div class="span4" style="background-color: yellow">
+                    <!--menus etc-->
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <span class="label label-success">5:00</span>
+                                </th>
+                                <th>
+                                    <span class="label label-success">5:00</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <button class="btn btn-primary" type="button" onclick="">take a sit</button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary" type="button" onclick="">take a sit</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <ul id="myTab" class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#logs" data-toggle="tab">Logs</a>
+                        </li>
+                        <li>
+                            <a href="#spectactors" data-toggle="tab">Spectactors</a>
+                        </li>
+                    </ul>
+                    <div id="myTabContent" class="tab-content">
+                        <div class="tab-pane fade in active" id="logs">
+                            <p>Here will be lot of logs</p>
+                        </div>
+                        <div class="tab-pane fade" id="spectactors">
+                            <p>Here will be list of the spectactors</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="/WebChess/js/bootstrap-tab.js"></script>
+    </body>
+</html>

@@ -50,4 +50,9 @@ public class ChessTablesManagerController {
     public String mainPage() {
         return "main";
     }
+    
+    @RequestMapping(value = {"/table", "/welcome/table"}, method = RequestMethod.GET)
+    public String createTable() {
+        return "table";
+    }
 }
