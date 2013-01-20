@@ -50,11 +50,19 @@ public class WSConnectionManagerImpl implements WSConnectionManager {
 
     @Override
     public Set<Integer> getChessTableIDs(ClientMessageInbound clientWS) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Set<Integer> result = clientToRoomsMap.get(clientWS);
+        if (result == null) {
+            result = new HashSet<Integer>();
+        }
+        return result;
     }
 
     @Override
     public Set<ClientMessageInbound> findWSConnectionsToChessTable(Integer chessTableId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Set<ClientMessageInbound> result = chessTableIdToClientsMap.get(chessTableId);
+        if (result == null) {
+            result = new HashSet<ClientMessageInbound>();
+        }
+        return result;
     }
 }

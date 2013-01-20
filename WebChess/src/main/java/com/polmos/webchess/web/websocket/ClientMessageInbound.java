@@ -1,15 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.polmos.webchess.web.websocket;
 
+import com.polmos.webchess.util.SpringContextProvider;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.util.Set;
 import org.apache.catalina.websocket.MessageInbound;
 import org.apache.catalina.websocket.WsOutbound;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.log4j.Logger;
 
 /**
  * This class handles messages/data incoming from chess rooms (directly from guests) 
@@ -18,27 +16,31 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class ClientMessageInbound extends MessageInbound {
 
+    private static final Logger logger = Logger.getLogger(ClientMessageInbound.class);
     private final String nickname;
     private static final String GUEST_PREFIX = "Guest";
-    @Autowired
     private WSConnectionManager wSConnectionManager;
 
-    public ClientMessageInbound(int id) {
-        this.nickname = GUEST_PREFIX + id;
+    public ClientMessageInbound(int clientId, int chessRoomId) {
+        this.nickname = GUEST_PREFIX + clientId;
+        wSConnectionManager = (WSConnectionManager) SpringContextProvider.applicationContext.getBean("wSConnectionManager");
+        if (wSConnectionManager == null) {
+            logger.error("WS Connection Manager not initialized for a client:"+this);
+        }
     }
 
     @Override
     protected void onOpen(WsOutbound outbound) {
         wSConnectionManager.addNewWSConnection(this, Integer.MIN_VALUE);
         String message = String.format("* %s %s", nickname, "has joined.");
-        broadcast(message);
+        broadcastToClientsInChessRoom(message, null); // TODO table id needed! 
     }
 
     @Override
     protected void onClose(int status) {
         wSConnectionManager.removeWSConnection(this);
         String message = String.format("* %s %s", nickname, "has disconnected.");
-        broadcast(message);
+        broadcastToClientsInChessRoom(message, status);
     }
 
     @Override
@@ -49,20 +51,37 @@ public class ClientMessageInbound extends MessageInbound {
 
     @Override
     protected void onTextMessage(CharBuffer message) throws IOException {
-        // Never trust the client
+        // Never trust the client or women (unfortunately we have only one option here)
         String filteredMessage = message.toString();
-        broadcast(filteredMessage);
+        broadcastToClientsInChessRoom(filteredMessage, null); // TODO table id needed! 
     }
 
-    private void broadcast(String message) {
-        /*for (ClientMessageInbound connection : connections) {
+    /**
+     * Method used for broadcasting messages to all clients connected with
+     * specified room (chess table)
+     * 
+     * @param message
+     * @param chessTableId 
+     */
+    private void broadcastToClientsInChessRoom(String message, Integer chessTableId) {
+        Set<ClientMessageInbound> connections = wSConnectionManager.findWSConnectionsToChessTable(chessTableId);
+        for (ClientMessageInbound connection : connections) {
             try {
                 CharBuffer buffer = CharBuffer.wrap(message);
                 connection.getWsOutbound().writeTextMessage(buffer);
             } catch (IOException ignore) {
-                // Ignore
+                logger.error("Exception during broadcasting to the chess table with id:"+chessTableId);
             }
-        }*/
+        }
+    }
+    
+    /**
+     * Method used for broadcasting messages to all connected clients 
+     * 
+     * @param message 
+     */
+    private void broadcastToAllClients(String message) {
+        // TODO
     }
 }
 

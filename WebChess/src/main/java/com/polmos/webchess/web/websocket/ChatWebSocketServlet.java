@@ -28,8 +28,8 @@ public class ChatWebSocketServlet extends WebSocketServlet {
      * @return
      */
     @Override
-    protected StreamInbound createWebSocketInbound(String subProtocol,
-            HttpServletRequest request) {
-        return new ClientMessageInbound(connectionIds.incrementAndGet());
+    protected StreamInbound createWebSocketInbound(String subProtocol, HttpServletRequest request) {
+        // TODO retrieve chess table id from request
+        return new ClientMessageInbound(connectionIds.incrementAndGet(), 0);
     }
 }
