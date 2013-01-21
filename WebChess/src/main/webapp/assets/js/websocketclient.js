@@ -7,11 +7,9 @@ function setConnected(connected) {
 }
 
 function connect() {
-    var target = document.getElementById('target').value;
-    if (target == '') {
-        alert('Please select server side connection implementation.');
-        return;
-    }
+    // 'ws://' + window.location.host + target
+    var target = 'ws://localhost:8084/WebChess/simple';
+
     if ('WebSocket' in window) {
         ws = new WebSocket(target);
     } else if ('MozWebSocket' in window) {
@@ -31,7 +29,7 @@ function connect() {
         setConnected(false);
         log('Info: WebSocket connection closed.');
     };
-}
+};
 
 function disconnect() {
     if (ws != null) {
@@ -60,7 +58,7 @@ function updateTarget(target) {
 }
 
 function log(message) {
-    var console = document.getElementById('console');
+    var console = document.getElementById('logs');
     var p = document.createElement('p');
     p.style.wordWrap = 'break-word';
     p.appendChild(document.createTextNode(message));

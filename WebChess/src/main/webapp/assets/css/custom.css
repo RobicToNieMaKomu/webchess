@@ -15,3 +15,8 @@
     width:700px;
 }
 
+#chess_table_container{
+    position:relative;
+    padding: 20px 20px 20px 20px;
+}
+

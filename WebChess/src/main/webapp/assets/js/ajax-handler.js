@@ -47,8 +47,12 @@ function createNewTable() {
 
     // callback handler that will be called on success
     request.done(function (response, textStatus, jqXHR){
+        // open ws connection and then request the page with new chess table
+        
+        
         // response contains id of the newly created table
-        myWindow=window.open('http://localhost:8084/WebChess/table','','width=800,height=600');
+        var url = "http://localhost:8084/WebChess/table?chessTableId=" + response;
+        myWindow=window.open(url,'','width=800,height=600');
         myWindow.focus();
     });
 
