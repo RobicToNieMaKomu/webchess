@@ -56,4 +56,9 @@ public class ChessTablesManagerController {
         model.addAttribute("title", "Chess Table #"+chessTableId);
         return "table";
     }
+    
+    @RequestMapping(value = {"/login", "/welcome/login"} ,method = RequestMethod.GET)
+    public String loginPage() {
+        return "login";
+    }
 }
