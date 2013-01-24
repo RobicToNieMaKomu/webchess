@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title th:text="#{logout.title}">WebChess</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="description" content="Default logout destination" />
+        <meta name="author" content="RobicToNieMaKomu" />
+
+        <!-- Le styles -->
+        <link href="../assets/css/bootstrap.css" rel="stylesheet" />
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" />
+        <link href="/WebChess/css/bootstrap-responsive.css" rel="stylesheet" th:href="@{/css/bootstrap-responsive.css}"/>
+        <link href="/WebChess/css/custom.css" rel="stylesheet" th:href="@{/css/custom.css}"/>
+        <link href="/WebChess/css/bootstrap.css" rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+        <style type="text/css">
+            body {
+                padding-top: 40px;
+                padding-bottom: 40px;
+                background-color: #f5f5f5;
+            }
+            
+            .form-signin-heading {
+                padding-bottom: 40px;
+            }
+        </style>
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div class="container">
+            <form class="form-signin">
+                <h3 class="form-signin-heading" th:text="#{logout.heading}">Logged out</h3>
+                <button class="btn btn-primary" type="submit">Go to the login page</button>
+            </form>
+        </div>
+    </body>
+</html>

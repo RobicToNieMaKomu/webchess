@@ -18,10 +18,11 @@ public class ClientMessageInbound extends MessageInbound {
 
     private static final Logger logger = Logger.getLogger(ClientMessageInbound.class);
     private final String nickname;
+    private static final String TABLE_ID_PREFIX = "chessTableId=";
     private static final String GUEST_PREFIX = "Guest";
     private WSConnectionManager wSConnectionManager;
 
-    public ClientMessageInbound(int clientId, int chessRoomId) {
+    public ClientMessageInbound(int clientId) {
         this.nickname = GUEST_PREFIX + clientId;
         wSConnectionManager = (WSConnectionManager) SpringContextProvider.applicationContext.getBean("wSConnectionManager");
         if (wSConnectionManager == null) {
@@ -82,6 +83,19 @@ public class ClientMessageInbound extends MessageInbound {
      */
     private void broadcastToAllClients(String message) {
         // TODO
+    }
+    
+    private String sanitizeQueryString(String queryString) {
+        String result = "";
+        // Only chessTableId is expected
+        if (queryString != null && queryString.startsWith(TABLE_ID_PREFIX)) {
+            String value = queryString.replaceFirst(TABLE_ID_PREFIX, "");
+            String regex = "[0-9]*";
+            if (value.matches(regex)) {
+                result = value;
+            }
+        }
+        return result;
     }
 }
 

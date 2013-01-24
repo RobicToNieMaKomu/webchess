@@ -61,4 +61,9 @@ public class ChessTablesManagerController {
     public String loginPage() {
         return "login";
     }
+    
+    @RequestMapping(value = {"/logout", "/welcome/logout"} ,method = RequestMethod.GET)
+    public String logoutPage() {
+        return "logout";
+    }
 }
