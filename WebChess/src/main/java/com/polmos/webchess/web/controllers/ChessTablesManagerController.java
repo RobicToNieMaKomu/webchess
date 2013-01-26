@@ -66,4 +66,10 @@ public class ChessTablesManagerController {
     public String logoutPage() {
         return "logout";
     }
+    
+    @RequestMapping(value = {"/loginfailed", "/welcome/loginfailed"} ,method = RequestMethod.GET)
+    public String loginFailed(final ModelMap model) {
+        model.addAttribute("loginFailed", true);
+        return "login";
+    }
 }

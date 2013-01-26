@@ -1,0 +1,40 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                    http://www.springframework.org/schema/security 
+                    http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+    <!-- allow access to the static resources to the everyone -->
+    <http pattern="/css/**" security="none" />
+    <http pattern="/js/**" security="none" />
+    <http pattern="/img/**" security="none" />
+    
+    <http use-expressions="true" disable-url-rewriting="true">
+    <intercept-url pattern="/login" access="permitAll" />
+     <intercept-url pattern="/logout" access="permitAll" />
+    <intercept-url pattern="/loginfailed" access="permitAll" />
+    <intercept-url pattern="/table/**" access="hasRole('supervisor')" />
+    <intercept-url pattern="/allTables" access="isAuthenticated()" />
+    <intercept-url pattern="/createTable" access="hasRole('supervisor')" />
+    <intercept-url pattern="/welcome" access="isAuthenticated()" />
+    <intercept-url pattern="/" access="isAuthenticated()" />
+    <intercept-url pattern="/WebChess/welcome" access="isAuthenticated()" />
+    <intercept-url pattern="/**" access="denyAll" />
+    <form-login login-page="/login"
+                default-target-url="/welcome"
+		authentication-failure-url="/loginfailed"/>
+    <logout logout-success-url="/logout" />
+    </http>
+
+    <authentication-manager>
+        <authentication-provider>
+            <user-service>
+                <user name="admin" password="admin" authorities="supervisor, teller, user" />
+                <user name="teller" password="teller" authorities="teller, user" />
+                <user name="user" password="user" authorities="user" />
+            </user-service>
+        </authentication-provider>
+    </authentication-manager>
+</beans:beans>

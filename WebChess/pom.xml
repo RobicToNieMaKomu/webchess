@@ -13,6 +13,7 @@
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springframework.version>3.2.0.RELEASE</springframework.version>
+        <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
     </properties>
     
     <dependencies>
@@ -98,20 +99,16 @@
             <artifactId>spring-tx</artifactId>
             <version>3.1.2.RELEASE</version>
         </dependency>
-        <!-- To avoid "Absent Code attribute in method that is not native or abstract" error 
-       <dependency>
-           <groupId>org.apache.geronimo.specs</groupId>
-           <artifactId>geronimo-ejb_3.1_spec</artifactId>
-           <version>1.0</version>
-           <scope>provided</scope>
-       </dependency>
-       <dependency>
-           <groupId>org.apache.geronimo.specs</groupId>
-           <artifactId>geronimo-jpa_2.0_spec</artifactId>
-           <version>1.0</version>
-           <scope>provided</scope>
-       </dependency>
-        -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>3.1.3.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>3.1.3.RELEASE</version>
+        </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate</artifactId>
@@ -162,6 +159,18 @@
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.1-902.jdbc4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>7.0.34</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-coyote</artifactId>
+            <version>7.0.34</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
