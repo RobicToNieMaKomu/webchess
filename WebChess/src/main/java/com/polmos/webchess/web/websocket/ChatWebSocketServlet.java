@@ -7,9 +7,7 @@ package com.polmos.webchess.web.websocket;
 import com.polmos.webchess.util.SpringContextProvider;
 import java.security.Principal;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.catalina.websocket.StreamInbound;
 import org.apache.catalina.websocket.WebSocketServlet;
 import org.apache.log4j.Logger;
