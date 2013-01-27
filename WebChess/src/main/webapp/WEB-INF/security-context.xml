@@ -20,6 +20,7 @@
     <intercept-url pattern="/createTable" access="hasRole('supervisor')" />
     <intercept-url pattern="/welcome" access="isAuthenticated()" />
     <intercept-url pattern="/" access="isAuthenticated()" />
+    <intercept-url pattern="/simple*" access="isAuthenticated()" />
     <intercept-url pattern="/WebChess/welcome" access="isAuthenticated()" />
     <intercept-url pattern="/**" access="denyAll" />
     <form-login login-page="/login"
@@ -32,6 +33,7 @@
         <authentication-provider>
             <user-service>
                 <user name="admin" password="admin" authorities="supervisor, teller, user" />
+                <user name="jurek" password="jurek" authorities="supervisor, teller, user" />
                 <user name="teller" password="teller" authorities="teller, user" />
                 <user name="user" password="user" authorities="user" />
             </user-service>

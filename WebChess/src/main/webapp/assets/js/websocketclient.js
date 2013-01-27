@@ -1,15 +1,13 @@
 var ws = null;
+var jq = jQuery.noConflict();
 
 function setConnected(connected) {
-    document.getElementById('connect').disabled = connected;
-    document.getElementById('disconnect').disabled = !connected;
-    document.getElementById('echo').disabled = !connected;
+    // jq("#indicator").html();
 }
 
 function connect() {
-    // 'ws://' + window.location.host + target
-    var target = 'ws://localhost:8084/WebChess/simple';
-
+    var target = 'ws://localhost:8084/WebChess/simple' + window.location.search;
+    
     if ('WebSocket' in window) {
         ws = new WebSocket(target);
     } else if ('MozWebSocket' in window) {
@@ -19,6 +17,8 @@ function connect() {
         return;
     }
     ws.onopen = function () {
+        // var currentTable = window.location.search;
+        // sendMessage(currentTable)
         setConnected(true);
         log('Info: WebSocket connection opened.');
     };
@@ -30,6 +30,10 @@ function connect() {
         log('Info: WebSocket connection closed.');
     };
 };
+
+function sendMessage(message) {
+    ws.send(message);
+}
 
 function disconnect() {
     if (ws != null) {
@@ -49,22 +53,7 @@ function echo() {
     }
 }
 
-function updateTarget(target) {
-    if (window.location.protocol == 'http:') {
-        document.getElementById('target').value = 'ws://' + window.location.host + target;
-    } else {
-        document.getElementById('target').value = 'wss://' + window.location.host + target;
-    }
-}
-
 function log(message) {
-    var console = document.getElementById('logs');
-    var p = document.createElement('p');
-    p.style.wordWrap = 'break-word';
-    p.appendChild(document.createTextNode(message));
-    console.appendChild(p);
-    while (console.childNodes.length > 25) {
-        console.removeChild(console.firstChild);
-    }
-    console.scrollTop = console.scrollHeight;
+    message = "<p>" + message + "</p>";
+    jq("#logs").appendChild(message);
 }
