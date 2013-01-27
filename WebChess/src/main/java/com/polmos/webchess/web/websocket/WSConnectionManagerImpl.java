@@ -1,5 +1,7 @@
 package com.polmos.webchess.web.websocket;
 
+import java.io.IOException;
+import java.nio.CharBuffer;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -58,11 +60,54 @@ public class WSConnectionManagerImpl implements WSConnectionManager {
     }
 
     @Override
-    public Set<ClientMessageInbound> findWSConnectionsToChessTable(Integer chessTableId) {
+    public Set<ClientMessageInbound> findWSConnectionsByChessTable(Integer chessTableId) {
         Set<ClientMessageInbound> result = chessTableIdToClientsMap.get(chessTableId);
         if (result == null) {
             result = new HashSet<ClientMessageInbound>();
         }
         return result;
+    }
+
+    @Override
+    public ClientMessageInbound findWSConnectionByUserName(String userName) {
+        ClientMessageInbound result = null;
+        if (userName != null) {
+            for (ClientMessageInbound wsConnection : wsConnections) {
+                if (userName.equals(wsConnection.getUsername())) {
+                    result = wsConnection;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Method used for broadcasting messages to all clients connected with
+     * specified room (chess table)
+     *
+     * @param message
+     * @param chessTableId
+     */
+    @Override
+    public void broadcastToClientsInChessRoom(String message, Integer chessTableId) {
+        Set<ClientMessageInbound> connections = findWSConnectionsByChessTable(chessTableId);
+        for (ClientMessageInbound connection : connections) {
+            try {
+                CharBuffer buffer = CharBuffer.wrap(message);
+                connection.getWsOutbound().writeTextMessage(buffer);
+            } catch (IOException ignore) {
+                logger.error("Exception during broadcasting to the chess table with id:" + chessTableId);
+            }
+        }
+    }
+
+    /**
+     * Method used for broadcasting messages to all connected clients
+     *
+     * @param message
+     */
+    @Override
+    public void broadcastToAllClients(String message) {
+        // TODO
     }
 }
