@@ -29,6 +29,7 @@ function connect() {
         window.alert("Closed connection to the server.");
         log('Info: WebSocket connection closed.');
     };
+    refreshRemainingTime(300, 300);
 };
 
 function sendMessage(message) {

@@ -63,9 +63,12 @@ public class ChessTablesManagerController {
                 model.addAttribute(HtmlElements.TABLE_GAME_TIME, chessTable.getGameTime());
                 model.addAttribute(HtmlElements.TABLE_WPLAYER, chessTable.getWplayer());
                 model.addAttribute(HtmlElements.TABLE_BPLAYER, chessTable.getBplayer());
-                model.addAttribute(HtmlElements.TABLE_ERROR, false);
+                // If the game has begun then client will immediately send request for a match details
+                model.addAttribute(HtmlElements.TABLE_GAME_STARTED, chessTable.getGameStarted());
+                // TABLE_EXIST indicates whether requested table exist or no
+                model.addAttribute(HtmlElements.TABLE_EXIST, true);
             } else {
-                model.addAttribute(HtmlElements.TABLE_ERROR, true);
+                model.addAttribute(HtmlElements.TABLE_EXIST, false);
             }
         } catch (Exception ex) {
             logger.error("Exception caught during retrieving info about table: " + ex);

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.polmos.webchess.matchmgnt.entity;
 
 import java.io.Serializable;
@@ -42,6 +38,16 @@ public class Match implements Serializable {
     @JoinColumn(name = "wplayerid", referencedColumnName = "id")
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private User wplayerid;
+    @Column(name = "hasEnded")
+    private Boolean hasEnded;
+
+    public Boolean getHasEnded() {
+        return hasEnded;
+    }
+
+    public void setHasEnded(Boolean hasEnded) {
+        this.hasEnded = hasEnded;
+    }
 
     public Match() {
     }
