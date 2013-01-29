@@ -1,10 +1,10 @@
 // Variables
 var jq = jQuery.noConflict();
-var firstTime = true;
 var buttonInsideColumn = "<td>" + "<button class='btn btn-small' type='button'>take a sit</button>" + "</td>";
 // Functions
 function refresh() {
-    // Avoid instant reloading page dude!
+    // Avoid instant reloading page and getting json response too early
+    jq(document).ready(function() {
     jq(function() {
         jq.get("/WebChess/allTables", function(data,status){
             //data contains the result list
@@ -35,7 +35,8 @@ function refresh() {
     jQuery("#timer").text(jQuery.now());
     setTimeout(function(){
         refresh()
-        },5000);
+    },5000);
+    });
 }
             
 function createNewTable() {
@@ -44,12 +45,8 @@ function createNewTable() {
         url: "/WebChess/createTable",
         type: "post"
     });
-
     // callback handler that will be called on success
     request.done(function (response, textStatus, jqXHR){
-        // open ws connection and then request the page with new chess table
-        
-        
         // response contains id of the newly created table
         var url = "http://localhost:8084/WebChess/table?chessTableId=" + response;
         myWindow=window.open(url,'','width=800,height=600');
@@ -59,10 +56,7 @@ function createNewTable() {
     // callback handler that will be called on failure
     request.fail(function (jqXHR, textStatus, errorThrown){
         // log the error to the console
-        console.error(
-            "The following error occured: "+
-            textStatus, errorThrown
-            );
+        console.error("The following error occured: "+textStatus, errorThrown);
     });
 }
 

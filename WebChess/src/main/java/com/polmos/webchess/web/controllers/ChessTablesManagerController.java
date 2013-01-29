@@ -1,9 +1,11 @@
 package com.polmos.webchess.web.controllers;
 
+import com.polmos.webchess.enums.HtmlElements;
 import com.polmos.webchess.matchmgnt.entity.ChessTable;
 import com.polmos.webchess.matchmgnt.service.ChessTableService;
 import java.util.Date;
 import java.util.List;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class ChessTablesManagerController {
 
+    private final static Logger logger = Logger.getLogger(ChessTablesManagerController.class);
     @Autowired
     private ChessTableService chessTableService;
 
@@ -52,22 +55,35 @@ public class ChessTablesManagerController {
     @RequestMapping(value = "/table", method = RequestMethod.GET)
     public String getChessTable(@RequestParam(value = "chessTableId") String chessTableId, final ModelMap model) {
         // This stands for .../table?chessTableId=X in the URL
-        // TODO check if this table exists at all!
-        model.addAttribute("title", "Chess Table #"+chessTableId);
+        try {
+            Integer tableId = Integer.parseInt(chessTableId);
+            ChessTable chessTable = chessTableService.findChessTable(tableId);
+            if (chessTable != null) {
+                model.addAttribute(HtmlElements.TABLE_ID, chessTableId);
+                model.addAttribute(HtmlElements.TABLE_GAME_TIME, chessTable.getGameTime());
+                model.addAttribute(HtmlElements.TABLE_WPLAYER, chessTable.getWplayer());
+                model.addAttribute(HtmlElements.TABLE_BPLAYER, chessTable.getBplayer());
+                model.addAttribute(HtmlElements.TABLE_ERROR, false);
+            } else {
+                model.addAttribute(HtmlElements.TABLE_ERROR, true);
+            }
+        } catch (Exception ex) {
+            logger.error("Exception caught during retrieving info about table: " + ex);
+        }
         return "table";
     }
-    
-    @RequestMapping(value = {"/login", "/welcome/login"} ,method = RequestMethod.GET)
+
+    @RequestMapping(value = {"/login", "/welcome/login"}, method = RequestMethod.GET)
     public String loginPage() {
         return "login";
     }
-    
-    @RequestMapping(value = {"/logout", "/welcome/logout"} ,method = RequestMethod.GET)
+
+    @RequestMapping(value = {"/logout", "/welcome/logout"}, method = RequestMethod.GET)
     public String logoutPage() {
         return "logout";
     }
-    
-    @RequestMapping(value = {"/loginfailed", "/welcome/loginfailed"} ,method = RequestMethod.GET)
+
+    @RequestMapping(value = {"/loginfailed", "/welcome/loginfailed"}, method = RequestMethod.GET)
     public String loginFailed(final ModelMap model) {
         model.addAttribute("loginFailed", true);
         return "login";

@@ -37,4 +37,11 @@ public interface ChessTableService {
      */
     void updateStateOfChessTable(Integer tableId, User wPlayer, User bPlayer, Integer gameTime, Date lastVisitTimestamp);
     
+    /**
+     * Returns chess table or null if table does not exist.
+     * 
+     * @param tableId
+     * @return 
+     */
+    ChessTable findChessTable(Integer tableId);
 }

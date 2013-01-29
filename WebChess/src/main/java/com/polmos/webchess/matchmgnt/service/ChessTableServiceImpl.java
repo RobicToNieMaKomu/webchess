@@ -46,4 +46,10 @@ public class ChessTableServiceImpl implements ChessTableService {
         // update state of this table
         chessTableDAO.updateChessTable(chessTable);
     }
+
+    @Override
+    public ChessTable findChessTable(Integer tableId) {
+        ChessTable result = chessTableDAO.findChessTableById(tableId);
+        return result;
+    }
 }

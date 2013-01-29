@@ -53,6 +53,16 @@ public class ChessTable implements Serializable {
     @JoinColumn(name = "bplayer", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.EAGER)
     private User bplayer;
+    @Column(name = "game_started")
+    private Boolean gameStarted;
+
+    public Boolean getGameStarted() {
+        return gameStarted;
+    }
+
+    public void setGameStarted(Boolean gameStarted) {
+        this.gameStarted = gameStarted;
+    }
 
     public ChessTable() {
     }

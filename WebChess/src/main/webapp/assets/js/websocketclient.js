@@ -26,7 +26,7 @@ function connect() {
         log('Received: ' + event.data);
     };
     ws.onclose = function () {
-        setConnected(false);
+        window.alert("Closed connection to the server.");
         log('Info: WebSocket connection closed.');
     };
 };
@@ -55,5 +55,9 @@ function echo() {
 
 function log(message) {
     message = "<p>" + message + "</p>";
-    jq("#logs").appendChild(message);
+    jq("#logs").append(message);
+}
+
+function sit(side) {
+    log('tried to sit:' + side);
 }

@@ -37,9 +37,7 @@ public class ClientMessageInbound extends MessageInbound {
     protected void onOpen(WsOutbound outbound) {
         logger.debug("WebSocket for client: " + username + " opened.");
         String message = String.format("* %s %s", username, "has joined.");
-        // wSConnectionManager.broadcastToClientsInChessRoom(message, null); // TODO table id needed!
-        // CharBuffer buff = null;buff.append("sxds");
-        //outbound.writeTextMessage(message.toCharArray());
+        // TODO send all current information about table, clients, match, etc...
 
     }
 
