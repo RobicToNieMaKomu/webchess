@@ -26,7 +26,7 @@ function connect() {
         log('Received: ' + event.data);
     };
     ws.onclose = function () {
-        window.alert("Closed connection to the server.");
+        window.alert("Connection with the server closed.");
         log('Info: WebSocket connection closed.');
     };
     refreshRemainingTime(300, 300);

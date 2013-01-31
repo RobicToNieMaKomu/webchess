@@ -44,3 +44,11 @@
     margin-bottom: 15px;
     padding: 7px 9px;
 }
+.span4 {
+    border: 1px solid black;
+}
+
+.span4 > .span12 {
+    margin-bottom: 20px;
+    
+}

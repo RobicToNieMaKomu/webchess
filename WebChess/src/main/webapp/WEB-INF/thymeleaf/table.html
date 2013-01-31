@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title th:text="${title}">Table number #ID</title>
@@ -5,14 +6,19 @@
         <meta name="description" content="WebSockets in action!" />
         <meta name="author" content="RobicToNieMaKomu" />
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-        <link href="/WebChess/css/bootstrap.css" rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
-        <link href="/WebChess/css/custom.css" rel="stylesheet" th:href="@{/css/custom.css}"/>
-        <link href="/WebChess/css/bootstrap-responsive.css" rel="stylesheet" th:href="@{/css/bootstrap-responsive.css}"/>
-        <script type="text/javascript" src="/WebChess/js/websocketclient.js"></script>
+        <link href="../../assets/css/bootstrap.css" rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+        <link href="../../assets/css/bootstrap-responsive.css" rel="stylesheet" th:href="@{/css/bootstrap-responsive.css}"/>
+        <link href="../../assets/css/custom.css" rel="stylesheet" th:href="@{/css/custom.css}"/>
+        <style type="text/css">
+            body {
+                padding: 20px 10px 20px 10px;
+                background-color: #f5f5f5;
+            }
+        </style>
     </head>
-    <body onload="connect()">
+    <body onload="">
         <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Then what are you doin here?</h2></noscript>
-        <div class="container-fluid" id="chess_table_container">
+        <div class="container-fluid" id="chess_table_container"  style="background-color: #bce8f1">
             <div class="row-fluid">
                 <div class="span8">
                     <!--chessboard -->
@@ -20,7 +26,7 @@
                             style="border:1px solid black;">
                     </canvas> 
                 </div>
-                <div class="span4" style="background-color: turquoise">
+                <div class="span4">
                     <!--menus etc -->
                     <table class="table">
                         <thead>
@@ -42,43 +48,48 @@
                                     <button class="btn btn-primary" type="button" onclick="sit('black')" th:text="${bplayer} ? ${bplayer.login}:#{table.sit_button}">take a sit</button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <button class="btn btn-info" type="button" onclick="proposeDraw()">draw</button>
-                                </td><td></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <button class="btn btn-danger" type="button" onclick="surrender()">surrender</button>
-                                </td><td></td>
-                            </tr>
-                            <tr>
-                                <td valign="bottom" colspan="2">
-                                    <ul id="myTab" class="nav nav-tabs">
-                                        <li class="active">
-                                            <a href="#logs" data-toggle="tab">Logs</a>
-                                        </li>
-                                        <li>
-                                            <a href="#spectactors" data-toggle="tab">Spectactors</a>
-                                        </li>
-                                    </ul>
-                                    <div id="myTabContent" class="tab-content">
-                                        <div class="tab-pane fade in active" id="logs">
-                                            <p>Here will be lot of logs</p>
-                                        </div>
-                                        <div class="tab-pane fade" id="spectactors">
-                                            <p>Here will be list of the spectactors</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
+                    <div class="span12">
+                        <button class="btn btn-info" type="button" onclick="proposeDraw()">draw</button>
+                        <button class="btn btn-danger" type="button" onclick="surrender()">surrender</button>
+                        <div class="btn-group">
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                                Options<span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <li><a tabindex="-1" href="http://google.com">Action</a></li>
+                                <li><a tabindex="-1" href="#anotherAction">Another action</a></li>
+                                <li><a tabindex="-1" href="#">Something else here</a></li>
+                                <li class="divider"></li>
+                                <li><a tabindex="-1" href="#">Separated link</a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <div class="span12">
+                        <ul id="myTab" class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#logs" data-toggle="tab">Logs</a>
+                            </li>
+                            <li>
+                                <a href="#spectactors" data-toggle="tab">Spectactors</a>
+                            </li>
+                        </ul>
+                        <div id="myTabContent" class="tab-content">
+                            <div class="tab-pane fade in active" id="logs">
+                                <p>Here will be lot of logs</p>
+                            </div>
+                            <div class="tab-pane fade" id="spectactors">
+                                <p>Here will be list of the spectactors</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <script type="text/javascript" src="/WebChess/js/bootstrap.js"></script>
-        <script type="text/javascript" src="/WebChess/js/bootstrap-tab.js"></script>
-        <script type="text/javascript" src="/WebChess/js/timer.js"></script>
+        <script type="text/javascript" src="../../assets/js/websocketclient.js" th:src="@{/js/websocketclient.js}"></script>
+        <script type="text/javascript" src="../../assets/js/bootstrap.js" th:src="@{/js/bootstrap.js}"></script>
+        <script type="text/javascript" src="../../assets/js/timer.js" th:src="@{/js/timer.js}"></script>
     </body>
 </html>
