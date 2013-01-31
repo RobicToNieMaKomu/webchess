@@ -31,8 +31,6 @@ function refresh() {
             jq("#currentChessTables").html(listOfChessTables);
         });
     });
-
-    jQuery("#timer").text(jQuery.now());
     setTimeout(function(){
         refresh()
     },5000);
@@ -49,7 +47,7 @@ function createNewTable() {
     request.done(function (response, textStatus, jqXHR){
         // response contains id of the newly created table
         var url = "http://localhost:8084/WebChess/table?chessTableId=" + response;
-        myWindow=window.open(url,'','width=800,height=600');
+        myWindow=window.open(url,'','width=850,height=600');
         myWindow.focus();
     });
 
