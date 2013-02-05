@@ -28,8 +28,8 @@ function refresh() {
                     listOfChessTables += "</tr>";
                 });
                 $("#currentChessTables").html(listOfChessTables);
-            });
-        });
+            })
+        })
         setTimeout(function(){
             refresh()
         },5000);
