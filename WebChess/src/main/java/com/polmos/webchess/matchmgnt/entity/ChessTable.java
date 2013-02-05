@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "ChessTable.findAll", query = "SELECT c FROM ChessTable c"),
+    @NamedQuery(name = "ChessTable.count", query = "SELECT COUNT(c) FROM ChessTable c"),
     @NamedQuery(name = "ChessTable.findByTableId", query = "SELECT c FROM ChessTable c WHERE c.tableId = :tableId"),
     @NamedQuery(name = "ChessTable.findByGameTime", query = "SELECT c FROM ChessTable c WHERE c.gameTime = :gameTime"),
     @NamedQuery(name = "ChessTable.findByLastVisitTimestamp", query = "SELECT c FROM ChessTable c WHERE c.lastVisitTimestamp = :lastVisitTimestamp")})

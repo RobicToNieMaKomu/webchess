@@ -21,33 +21,45 @@ public class ChessTableDAOImpl implements ChessTableDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Override
     public Integer createChessTable(ChessTable chessTable) {
         entityManager.persist(chessTable);
         entityManager.flush();
         Integer tableId = chessTable.getTableId();
         return tableId;
     }
-    
+
+    @Override
     public void updateChessTable(ChessTable chessTable) {
         if (entityManager.find(ChessTable.class, chessTable.getTableId()) != null) {
             entityManager.persist(chessTable);
         }
     }
 
+    @Override
     public ChessTable findChessTableById(Integer id) {
         ChessTable result = entityManager.find(ChessTable.class, id);
         return result;
     }
 
+    @Override
     public List<ChessTable> findAllChessTables() {
         Query createNamedQuery = entityManager.createNamedQuery("ChessTable.findAll");
         List<ChessTable> result = createNamedQuery.getResultList();
         return result;
     }
 
+    @Override
     public void removeChessTable(ChessTable chessTable) {
         ChessTable merge = entityManager.merge(chessTable);
         entityManager.remove(merge);
         logger.debug(chessTable + " removed");
+    }
+
+    @Override
+    public Long getChessTablesCount() {
+        Query namedQuery = entityManager.createNamedQuery("ChessTable.count");
+        Long result = (Long) namedQuery.getSingleResult();
+        return result;
     }
 }

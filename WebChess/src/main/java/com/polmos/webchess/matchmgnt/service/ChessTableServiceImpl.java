@@ -16,7 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("chessTableService")
 public class ChessTableServiceImpl implements ChessTableService {
 
-    private Integer DEFAULT_GAME_TIME = 900; // 15 min
+    private final Integer DEFAULT_GAME_TIME = 900; // 15 min
+    private final Long MAX_TABLES_COUNT = 10l;
+    private final Integer TABLE_CREATION_REJECTED = -1;
+    
     @Autowired
     private ChessTableDAO chessTableDAO;
 
@@ -27,11 +30,16 @@ public class ChessTableServiceImpl implements ChessTableService {
 
     @Override
     public Integer createNewChessTable(Date lastVisitTimestamp) {
+        Integer result = TABLE_CREATION_REJECTED;
         ChessTable chessTable = new ChessTable();
         chessTable.setLastVisitTimestamp(lastVisitTimestamp);
         chessTable.setGameTime(DEFAULT_GAME_TIME);
-        Integer chessTableId = chessTableDAO.createChessTable(chessTable);
-        return chessTableId;
+        // Currently, there is a limit of 100 chess tables (at one moment).
+        Long chessTablesCount = chessTableDAO.getChessTablesCount();
+        if (chessTablesCount < MAX_TABLES_COUNT) {
+            result = chessTableDAO.createChessTable(chessTable);
+        } 
+        return result;
     }
 
     @Transactional

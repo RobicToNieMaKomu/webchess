@@ -24,6 +24,7 @@ public class ClientMessageInbound extends MessageInbound {
     private static final String SEMICOLON = ";";
     private final String username;
     private WSConnectionManager wSConnectionManager;
+    
 
     public ClientMessageInbound(String clientName) {
         this.username = clientName;

@@ -16,6 +16,8 @@ public interface ChessTableDAO {
     List<ChessTable> findAllChessTables();
 
     void removeChessTable(ChessTable chessTable);
+
+    void updateChessTable(ChessTable chessTable);
     
-     public void updateChessTable(ChessTable chessTable);
+    Long getChessTablesCount();
 }

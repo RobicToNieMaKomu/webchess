@@ -18,11 +18,12 @@ public interface ChessTableService {
     List<ChessTable> getAllChessTables();
 
     /**
-     * Creates intial table (with default game time). This method is called
-     * whenever user requests new table.
+     * Creates a default table (with a default game time) or returns null if the 
+     * limit of chess tables is reached. 
+     * This method is called whenever user requests new table.
      * 
      * @param lastVisitTimestamp
-     * @return id of the created table
+     * @return id of the created table or null if table was not created
      */
     Integer createNewChessTable(Date lastVisitTimestamp);
     

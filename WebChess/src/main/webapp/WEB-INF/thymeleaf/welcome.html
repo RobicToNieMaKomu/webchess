@@ -28,6 +28,7 @@
                     <a class="brand" href="#" th:text="#{title.application}">Project name</a>
                     <div class="nav-collapse collapse">
                         <ul class="nav" id="right">
+                            <li> <button class="btn btn-primary" type="button" onclick="createNewTable()">Create new game</button></li>
                             <li><a href="#about">About</a></li>
                             <li><a href="#contact">Contact</a></li>
                             <li><a href="j_spring_security_logout">Logout</a></li>
@@ -37,11 +38,11 @@
             </div>
         </div>
 
-        <div class="container" th:unless="${#lists.isEmpty(allChessTables)}">
-            <div class="row">
+        <div class="container">
+            <h3 class="text-info" id="no_games_created" th:text="${allChessTables} ? #{chess_table.hide} : #{chess_table.noGames}">No games created</h3>
+            <div class="row" th:unless="${#lists.isEmpty(allChessTables)}">
                 <div class="span8">
                     <h2 th:text="#{title.list}">All available chess tables</h2>
-                    
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -53,28 +54,18 @@
                         </thead>
                         <tbody id="currentChessTables">
                             <tr th:each="table : ${allChessTables}">
-                                <th th:text="${table.tableId}">0</th>
-                                <th th:text="${table.wplayer}">__</th>
-                                <th th:text="${table.bplayer}">__</th>
-                                <th th:text="${table.gameTime}">5:00</th>
+                                <th th:text="${table.tableId}">-</th>
+                                <th th:text="${table.wplayer}">-</th>
+                                <th th:text="${table.bplayer}">-</th>
+                                <th th:text="${table.gameTime}">-</th>
                             </tr>
                         </tbody>
-                    </table>
+                     </table>
                 </div>
                 <div class="span4">
                 </div>
             </div>
-            <button class="btn btn-primary" type="button" onclick="createNewTable()">Create new game</button>
-            <div class="pagination">
-                <ul>
-                    <li><a href="#">Prev</a></li>
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">Next</a></li>
-                </ul>
-            </div>
+
         </div>
         <script type="text/javascript" src="../../assets/js/ajax-handler.js" th:src="@{/js/ajax-handler.js}"></script>
     </body>
