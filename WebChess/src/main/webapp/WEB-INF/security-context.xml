@@ -16,10 +16,11 @@
      <intercept-url pattern="/logout" access="permitAll" />
     <intercept-url pattern="/loginfailed" access="permitAll" />
     <intercept-url pattern="/table/**" access="hasRole('supervisor')" />
-    <intercept-url pattern="/allTables" access="isAuthenticated()" />
+    
     <intercept-url pattern="/createTable" access="hasRole('supervisor')" />
     <intercept-url pattern="/welcome" access="isAuthenticated()" />
     <intercept-url pattern="/" access="isAuthenticated()" />
+    <intercept-url pattern="/allTables" access="isAuthenticated()" />
     <intercept-url pattern="/simple*" access="isAuthenticated()" />
     <intercept-url pattern="/WebChess/welcome" access="isAuthenticated()" />
     <intercept-url pattern="/**" access="denyAll" />
