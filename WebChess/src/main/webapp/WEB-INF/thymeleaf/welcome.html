@@ -58,16 +58,17 @@
                         </thead>
                         <tbody id="currentChessTables">
                             <tr th:each="table : ${allChessTables}">
-                                <th th:text="${table.tableId}">-</th>
-                                <th th:text="${table.wplayer}">-</th>
-                                <th th:text="${table.bplayer}">-</th>
-                                <th th:text="${table.gameTime}">-</th>
+                                <td th:text="${table.tableId}"></td>
+                                <td th:text="${table.wplayer}"></td>
+                                <td th:text="${table.bplayer}"></td>
+                                <td th:text="${table.gameTime}"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+        <script type="text/javascript" src="../../assets/js/timer.js" th:src="@{/js/timer.js}"></script>
         <script type="text/javascript" src="../../assets/js/ajax-handler.js" th:src="@{/js/ajax-handler.js}"></script>
     </body>
 </html>

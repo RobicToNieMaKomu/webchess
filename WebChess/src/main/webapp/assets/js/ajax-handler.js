@@ -1,15 +1,37 @@
-var buttonInsideColumn = "<td>" + "<button class='btn btn-small' type='button'>take a sit</button>" + "</td>";
+var sitButton = "<button class='btn btn-small' type='button'>take a sit</button>";
+var buttonInsideColumn = "<td>" + sitButton + "</td>";
 var noTableCreated = -1;
 
 $(document).ready(function () {
+    insertButtons();
+    setRowListeners();
+    formatTime();
     refresWrapper();
 });
 
 function refresWrapper() {
-     setTimeout(function(){
+    setTimeout(function(){
         refreshContent();
         refresWrapper();
     },5000); 
+}
+
+function insertButtons() {
+    $('tbody#currentChessTables tr td:empty').html(sitButton);
+}
+
+function setRowListeners() {
+    $('tbody#currentChessTables tr').live('hover', function (event) {               
+        $(this).toggleClass('info');
+    });
+}
+
+function formatTime() {
+    $('tbody#currentChessTables tr').each(function() {
+        var unformattedTime = $(this).find('td:last').text();
+        var formattedTime = remainingTime(unformattedTime);
+        $(this).find('td:last').text(formattedTime);
+    });
 }
 
 function refreshContent() {
@@ -32,7 +54,8 @@ function refreshContent() {
             } else {
                 listOfChessTables += "<td>"+table.bplayer+"</td>";
             }
-            listOfChessTables += "<td>"+table.gameTime+"</td>";
+            
+            listOfChessTables += "<td>"+remainingTime(table.gameTime)+"</td>";
             listOfChessTables += "</tr>";
         });
         $("#currentChessTables").html(listOfChessTables);

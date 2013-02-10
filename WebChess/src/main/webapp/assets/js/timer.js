@@ -1,4 +1,3 @@
-var jq = jQuery.noConflict();
 var gameStarted = true;
 var remainingWPlayerTime = 0;
 var remainingBPlayerTime = 0;
@@ -31,8 +30,8 @@ function refreshRemainingTime(initialWPlayerTime, initialBPlayerTime) {
         remainingBPlayerTime = initialBPlayerTime;
         var wTime = remainingTime(remainingWPlayerTime);
         var bTime = remainingTime(remainingBPlayerTime);
-        jq('#wplayerTime').text(wTime);
-        jq('#bplayerTime').text(bTime);
+        $('#wplayerTime').text(wTime);
+        $('#bplayerTime').text(bTime);
         setTimeout(function(){
             remainingWPlayerTime = remainingWPlayerTime - 1;
             remainingBPlayerTime = remainingWPlayerTime - 1;
