@@ -5,6 +5,7 @@ var noTableCreated = -1;
 $(document).ready(function () {
     insertButtons();
     setRowListeners();
+    setButtonHandlers();
     formatTime();
     refresWrapper();
 });
@@ -21,8 +22,14 @@ function insertButtons() {
 }
 
 function setRowListeners() {
+    // Rows highlighting 
     $('tbody#currentChessTables tr').live('hover', function (event) {               
         $(this).toggleClass('info');
+    });
+    // OnClick handlers
+    $('tbody#currentChessTables tr').live('click', function (event) {  
+        var tableId = $(this).find('td:first').text();
+        openTable(tableId);
     });
 }
 
@@ -32,6 +39,20 @@ function formatTime() {
         var formattedTime = remainingTime(unformattedTime);
         $(this).find('td:last').text(formattedTime);
     });
+}
+
+function setButtonHandlers() {
+    $('tr td button.btn').live('click', function (event) {
+        event.stopPropagation();
+        var tableId = $(this).parent().parent().find('td:first').text();
+        openTable(tableId);
+    });
+}
+
+function openTable(tableId) {
+    var url = "http://localhost:8084/WebChess/table?chessTableId=" + tableId;
+    myWindow=window.open(url,'','width=850,height=600');
+    myWindow.focus();
 }
 
 function refreshContent() {
@@ -73,9 +94,7 @@ function createNewTable() {
         // response contains id of the newly created table or 
         // null if table wasnt created
         if (response !== null && response !== noTableCreated) {
-            var url = "http://localhost:8084/WebChess/table?chessTableId=" + response;
-            myWindow=window.open(url,'','width=850,height=600');
-            myWindow.focus();
+            openTable(response);
         } else {
             alert("Could not create another table. Please join to an existing game or wait for a free table.");
         }
