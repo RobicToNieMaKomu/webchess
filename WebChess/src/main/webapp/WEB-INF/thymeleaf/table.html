@@ -16,7 +16,7 @@
             }
         </style>
     </head>
-    <body onload="">
+    <body>
         <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Then what are you doin here?</h2></noscript>
         <div class="container-fluid" id="chess_table_container"  style="background-color: #bce8f1">
             <div class="row-fluid">
@@ -42,10 +42,10 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <button class="btn btn-primary" type="button" onclick="sit('white')" th:text="${wplayer} ? ${wplayer.login}:#{table.sit_button}">take a sit</button>
+                                    <button id="wbutton" class="btn btn-primary" type="button" th:text="${wplayer} ? ${wplayer.login}:#{table.sit_button}">take a sit</button>
                                 </td>
                                 <td>
-                                    <button class="btn btn-primary" type="button" onclick="sit('black')" th:text="${bplayer} ? ${bplayer.login}:#{table.sit_button}">take a sit</button>
+                                    <button id="bbutton" class="btn btn-primary" type="button" th:text="${bplayer} ? ${bplayer.login}:#{table.sit_button}">take a sit</button>
                                 </td>
                             </tr>
                         </tbody>

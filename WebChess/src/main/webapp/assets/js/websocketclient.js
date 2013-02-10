@@ -1,9 +1,8 @@
 var ws = null;
-var jq = jQuery.noConflict();
-
-function setConnected(connected) {
-    // jq("#indicator").html();
-}
+$(document).ready(function() {
+    connect();
+    addButtonHandlers();
+});
 
 function connect() {
     var target = 'ws://localhost:8084/WebChess/simple' + window.location.search;
@@ -19,7 +18,6 @@ function connect() {
     ws.onopen = function () {
         // var currentTable = window.location.search;
         // sendMessage(currentTable)
-        setConnected(true);
         log('Info: WebSocket connection opened.');
     };
     ws.onmessage = function (event) {
@@ -29,8 +27,7 @@ function connect() {
         window.alert("Connection with the server closed.");
         log('Info: WebSocket connection closed.');
     };
-    refreshRemainingTime(300, 300);
-};
+}
 
 function sendMessage(message) {
     ws.send(message);
@@ -41,7 +38,6 @@ function disconnect() {
         ws.close();
         ws = null;
     }
-    setConnected(false);
 }
 
 function echo() {
@@ -59,6 +55,16 @@ function log(message) {
     jq("#logs").append(message);
 }
 
-function sit(side) {
-    log('tried to sit:' + side);
+function addButtonHandlers() {
+    $('button#wbutton').click(function(event) {
+        $(this).disabled = 'disabled';
+        $(this).text('Andrew Golota');
+        $(this).addClass('disabled');
+    });
+    
+    $('button#bbutton').click(function(event) {
+        $(this).disabled = 'disabled';
+        $(this).text('Riddick Bowe');
+        $(this).addClass('disabled');
+    });
 }
