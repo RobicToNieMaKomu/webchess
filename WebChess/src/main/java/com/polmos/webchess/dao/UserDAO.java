@@ -10,6 +10,7 @@ import java.util.List;
 public interface UserDAO {
     List<User> getAllUsers();
     User findUserById(Integer id);
+    User findUserByName(String userName);
     void saveUser(User user);
     void updateUser(User user);
     void removeUser(User user);

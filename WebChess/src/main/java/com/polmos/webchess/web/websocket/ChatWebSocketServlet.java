@@ -50,10 +50,14 @@ public class ChatWebSocketServlet extends WebSocketServlet {
             // New connection (there are no registred conncetions for this user)
             result = new ClientMessageInbound(userName);
             wSConnectionManager.addNewWSConnection(result, tableId);
+            // CANT SEND ANYTHING BEFORE HANDSHAKE!!!
+            //wSConnectionManager.broadcastToClientsInChessRoom("hello"+tableId, tableId);
         } else {
             // Another connection (user has connections with at least one table already)
             result = clientMessageInbound;
             wSConnectionManager.addNewWSConnection(clientMessageInbound, tableId);
+            // CANT SEND ANYTHING BEFORE HANDSHAKE!!!
+            // wSConnectionManager.broadcastToClientsInChessRoom("hello"+tableId, tableId);
             // TODO:
             // Resume connection (connection between this user and server has been broken lately)
         }

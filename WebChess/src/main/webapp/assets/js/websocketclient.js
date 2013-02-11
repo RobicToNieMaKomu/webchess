@@ -16,12 +16,11 @@ function connect() {
         return;
     }
     ws.onopen = function () {
-        // var currentTable = window.location.search;
-        // sendMessage(currentTable)
         log('Info: WebSocket connection opened.');
     };
     ws.onmessage = function (event) {
         log('Received: ' + event.data);
+        // tableId=<X>;<COMMAND>;<instruction(s) separated by coma>
     };
     ws.onclose = function () {
         window.alert("Connection with the server closed.");
@@ -52,7 +51,7 @@ function echo() {
 
 function log(message) {
     message = "<p>" + message + "</p>";
-    jq("#logs").append(message);
+    $("#logs").append(message);
 }
 
 function addButtonHandlers() {

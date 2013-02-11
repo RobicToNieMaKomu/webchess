@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Piotrek
  */
 @Service(value = "userDAO")
+@Transactional
 public class UserDAOImpl implements UserDAO {
 
     private static Logger logger = Logger.getLogger(UserDAOImpl.class);
@@ -22,7 +23,6 @@ public class UserDAOImpl implements UserDAO {
     private EntityManager entityManager;
 
     @Override
-    @Transactional
     public List<User> getAllUsers() {
         List<User> result = new ArrayList<User>();
         Query createNamedQuery = entityManager.createNamedQuery("User.findAll");
@@ -31,7 +31,6 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    @Transactional
     public User findUserById(Integer id) {
         User user = entityManager.find(User.class, id);
 
@@ -39,23 +38,28 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    @Transactional
     public void saveUser(User user) {
         logger.debug("saving user: " + user);
         entityManager.persist(user);
     }
 
     @Override
-    @Transactional
     public void updateUser(User user) {
         entityManager.persist(user);
 
     }
 
     @Override
-    @Transactional
     public void removeUser(User user) {
         User merge = entityManager.merge(user);
         entityManager.remove(merge);
+    }
+
+    @Override
+    public User findUserByName(String userName) {
+        Query namedQuery = entityManager.createNamedQuery("User.findByLogin");
+        namedQuery.setParameter("login", userName);
+        User user = (User)namedQuery.getSingleResult();
+        return user;
     }
 }

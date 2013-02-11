@@ -29,11 +29,12 @@ public class ChessTableServiceImpl implements ChessTableService {
     }
 
     @Override
-    public Integer createNewChessTable(Date lastVisitTimestamp) {
+    public Integer createNewChessTable(Date lastVisitTimestamp, User user) {
         Integer result = TABLE_CREATION_REJECTED;
         ChessTable chessTable = new ChessTable();
         chessTable.setLastVisitTimestamp(lastVisitTimestamp);
         chessTable.setGameTime(DEFAULT_GAME_TIME);
+        chessTable.setWplayer(user);
         // Currently, there is a limit of 100 chess tables (at one moment).
         Long chessTablesCount = chessTableDAO.getChessTablesCount();
         if (chessTablesCount < MAX_TABLES_COUNT) {

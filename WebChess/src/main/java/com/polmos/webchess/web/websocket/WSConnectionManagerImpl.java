@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import org.apache.catalina.websocket.WsOutbound;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -37,12 +38,20 @@ public class WSConnectionManagerImpl implements WSConnectionManager {
     @Override
     public void addNewWSConnection(ClientMessageInbound wsClientConnection, Integer chessTableId) {
         wsConnections.add(wsClientConnection);
+        // Add room to the clientToRooms map
         Set<Integer> chessRoomIds = clientToRoomsMap.get(wsClientConnection);
         if (chessRoomIds == null) {
             chessRoomIds = new HashSet<Integer>();
         }
         chessRoomIds.add(chessTableId);
         clientToRoomsMap.put(wsClientConnection, chessRoomIds);
+        // Add client to the roomToClients map
+        Set<ClientMessageInbound> clients = chessTableIdToClientsMap.get(chessTableId);
+        if (clients == null) {
+            clients = new HashSet<ClientMessageInbound>();
+        }
+        clients.add(wsClientConnection);
+        chessTableIdToClientsMap.put(chessTableId, clients);
     }
 
     @Override
@@ -93,8 +102,10 @@ public class WSConnectionManagerImpl implements WSConnectionManager {
         Set<ClientMessageInbound> connections = findWSConnectionsByChessTable(chessTableId);
         for (ClientMessageInbound connection : connections) {
             try {
-                CharBuffer buffer = CharBuffer.wrap(message);
-                connection.getWsOutbound().writeTextMessage(buffer);
+                CharBuffer buffer = CharBuffer.wrap(message.toCharArray());
+                WsOutbound wsOutbound = connection.getWsOutbound();
+                wsOutbound.writeTextMessage(buffer);
+                wsOutbound.flush();
             } catch (IOException ignore) {
                 logger.error("Exception during broadcasting to the chess table with id:" + chessTableId);
             }

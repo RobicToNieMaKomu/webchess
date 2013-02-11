@@ -49,7 +49,7 @@ function setButtonHandlers() {
     });
 }
 
-function openTable(tableId) {
+function openTable(tableId,color) {
     var url = "http://localhost:8084/WebChess/table?chessTableId=" + tableId;
     myWindow=window.open(url,'','width=850,height=600');
     myWindow.focus();
@@ -68,12 +68,12 @@ function refreshContent() {
             if (table.wplayer == null) {
                 listOfChessTables += buttonInsideColumn;
             } else {
-                listOfChessTables += "<td>"+table.wplayer+"</td>";
+                listOfChessTables += "<td>"+table.wplayer.login+"</td>";
             }
             if (table.bplayer == null) {
                 listOfChessTables += buttonInsideColumn;
             } else {
-                listOfChessTables += "<td>"+table.bplayer+"</td>";
+                listOfChessTables += "<td>"+table.bplayer.login+"</td>";
             }
             
             listOfChessTables += "<td>"+remainingTime(table.gameTime)+"</td>";

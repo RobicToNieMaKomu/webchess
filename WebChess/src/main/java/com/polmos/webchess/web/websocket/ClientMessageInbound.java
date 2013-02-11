@@ -39,7 +39,10 @@ public class ClientMessageInbound extends MessageInbound {
         logger.debug("WebSocket for client: " + username + " opened.");
         String message = String.format("* %s %s", username, "has joined.");
         // TODO send all current information about table, clients, match, etc...
-
+        Set<Integer> chessTableIDs = wSConnectionManager.getChessTableIDs(this);
+        for (Integer tableId : chessTableIDs) {
+        wSConnectionManager.broadcastToClientsInChessRoom("hello"+tableId, tableId);
+        }
     }
 
     @Override

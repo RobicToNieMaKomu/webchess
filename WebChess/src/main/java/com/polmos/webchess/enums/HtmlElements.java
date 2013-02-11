@@ -14,4 +14,5 @@ public class HtmlElements {
     public static final String TABLE_WPLAYER = "wplayer";
     public static final String TABLE_BPLAYER = "bplayer";
     public static final String TABLE_GAME_STARTED = "gameStarted";
+    public static final String REQUESTED_COLOR = "reqColor";
 }

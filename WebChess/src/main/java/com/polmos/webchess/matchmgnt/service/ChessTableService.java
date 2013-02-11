@@ -23,9 +23,10 @@ public interface ChessTableService {
      * This method is called whenever user requests new table.
      * 
      * @param lastVisitTimestamp
+     * @param User user requesting new table
      * @return id of the created table or null if table was not created
      */
-    Integer createNewChessTable(Date lastVisitTimestamp);
+    Integer createNewChessTable(Date lastVisitTimestamp, User user);
     
     /**
      * This method is called when the game is being started. 
