@@ -17,15 +17,28 @@ function connect() {
     }
     ws.onopen = function () {
         log('Info: WebSocket connection opened.');
+        var requestState = createMessage('CHAT','Morning fellas!'); 
+        var jsonString = JSON.stringify(requestState);
+        sendMessage(jsonString);
     };
     ws.onmessage = function (event) {
-        log('Received: ' + event.data);
+        log(event.data);
         // tableId=<X>;<COMMAND>;<instruction(s) separated by coma>
     };
     ws.onclose = function () {
         window.alert("Connection with the server closed.");
         log('Info: WebSocket connection closed.');
     };
+}
+/**
+ * Creates request to be to the server
+ */
+function createMessage(command,content) {
+    var pageParam = window.location.search.substring(1);
+    var pair = pageParam.split("=");
+    var tableId = parseInt(pair[1]);
+    var result = {TABLEID:tableId,COMMAND:command,CONTENT:content};
+    return result;
 }
 
 function sendMessage(message) {

@@ -1,15 +1,16 @@
 package com.polmos.webchess.web.websocket;
 
+import com.polmos.webchess.enums.SupportedWSCommands;
 import com.polmos.webchess.util.SpringContextProvider;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import org.apache.catalina.websocket.MessageInbound;
 import org.apache.catalina.websocket.WsOutbound;
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * This class handles messages/data incoming from chess rooms (directly from
@@ -20,11 +21,8 @@ import org.apache.log4j.Logger;
 public class ClientMessageInbound extends MessageInbound {
 
     private static final Logger logger = Logger.getLogger(ClientMessageInbound.class);
-    private static final String MESSAGE_PREFIX = "tableId:";
-    private static final String SEMICOLON = ";";
     private final String username;
     private WSConnectionManager wSConnectionManager;
-    
 
     public ClientMessageInbound(String clientName) {
         this.username = clientName;
@@ -37,20 +35,14 @@ public class ClientMessageInbound extends MessageInbound {
     @Override
     protected void onOpen(WsOutbound outbound) {
         logger.debug("WebSocket for client: " + username + " opened.");
-        String message = String.format("* %s %s", username, "has joined.");
-        // TODO send all current information about table, clients, match, etc...
-        Set<Integer> chessTableIDs = wSConnectionManager.getChessTableIDs(this);
-        for (Integer tableId : chessTableIDs) {
-        wSConnectionManager.broadcastToClientsInChessRoom("hello"+tableId, tableId);
-        }
     }
 
     @Override
     protected void onClose(int status) {
+        Set<Integer> chessTableIDs = wSConnectionManager.getChessTableIDs(this);
         wSConnectionManager.removeWSConnection(this);
         String message = String.format("* %s %s", username, "has disconnected.");
         // Broadcast message to the all chess rooms in which this client was sitting
-        Set<Integer> chessTableIDs = wSConnectionManager.getChessTableIDs(this);
         for (Integer chessTableId : chessTableIDs) {
             wSConnectionManager.broadcastToClientsInChessRoom(message, chessTableId);
         }
@@ -58,16 +50,39 @@ public class ClientMessageInbound extends MessageInbound {
 
     @Override
     protected void onTextMessage(CharBuffer message) throws IOException {
-        // Never trust the client (or women)
-        String filteredMessage = message.toString();
-        List<String> sanitizedMessage = sanitizeMessage(filteredMessage);
-        if (sanitizedMessage.size() == 2) {
-            // Retrieve table id from where this message was sent by client
-            String tabId = sanitizedMessage.get(0);
-            String content = sanitizedMessage.get(1);
-
-            Integer tableId = Integer.parseInt(tabId);
-            wSConnectionManager.broadcastToClientsInChessRoom(content, tableId);
+        try {
+            // Never trust the client (and women)
+            JSONObject json = sanitizeMessage(message.toString());
+            int tableId = json.getInt(SupportedWSCommands.TABLE_ID);
+            String command = json.getString(SupportedWSCommands.COMMAND);
+            String content = json.getString(SupportedWSCommands.CONTENT);
+            
+            switch (command) {
+                case SupportedWSCommands.CHAT:
+                    String chatMessage = ChatMessageCreator.createChatMessage(content, this.username);
+                    wSConnectionManager.broadcastToClientsInChessRoom(chatMessage, tableId);
+                    break;
+                case SupportedWSCommands.DRAW:
+                    break;
+                case SupportedWSCommands.MOVE:
+                    break;
+                case SupportedWSCommands.OPTIONS:
+                    break;
+                case SupportedWSCommands.READY:
+                    break;
+                case SupportedWSCommands.SIT:
+                    break;
+                case SupportedWSCommands.STATE:
+                    break;
+                case SupportedWSCommands.SURRENDER:
+                    break;
+                default:
+                    logger.error("Not supported type of a WS command:" + command);
+            }
+            
+        } catch (JSONException ex) {
+            logger.error("An exception occured while received message from client:"+this.username);
+            logger.error(ex);
         }
     }
 
@@ -82,41 +97,29 @@ public class ClientMessageInbound extends MessageInbound {
     }
 
     /**
-     * Method sanitizes and splits messeage into two parts - table id from where
-     * this message came from and body containing information to be displayed.
-     * Expected message: 
-     * "tableId:<id>;<content>" "tableId:50;Hello all! What a splendid day gentlemen!"
+     * Method sanitizes messeage and checks whether has TABLE_ID, COMMAND and 
+     * CONTENT within.
+     * Format of the expected messages:
+     * "TABLEID:<id>,COMMAND:'<command>',CONTENT:'<content>'" 
+     * Examples: 
+     * "TABLEID:1,COMMAND:'STATE',CONTENT:''" 
+     * "TABLEID:2,COMMAND:'CHAT',CONTENT:'What a splendid day gentlemen!'" 
      *
      * @param message
      * @return List containing table id and body
      */
-    private List<String> sanitizeMessage(String message) {
-        List<String> result = new ArrayList<String>();
+    private JSONObject sanitizeMessage(String message) throws JSONException {
+        JSONObject result = null;
         if (message != null && !message.isEmpty()) {
             // Check whether message starts with expected prefix
-            Boolean hasPrefix = message.startsWith(MESSAGE_PREFIX);
-            // Check whether message contains at least one semicolon
-            Boolean hasSemicolon = message.contains(SEMICOLON);
-            // Check whether there is at least 1 char between semicolon and prefix 
-            // (representing table id)
-            Boolean hasTableId = false;
-            int indexOfSemicolon = message.indexOf(SEMICOLON);
-            if (indexOfSemicolon - MESSAGE_PREFIX.length() >= 1) {
-                hasTableId = true;
-            }
-            // Check whether this message has content because
-            // there is no sense to distribute empty messages
-            Boolean hasContent = false;
-            if (message.length() - (indexOfSemicolon + 1) > 0) {
-                hasContent = true;
-            }
-            // Only if all these four conditionals are true, message is valid
-            if (hasPrefix && hasTableId && hasSemicolon && hasContent) {
-                result.add(message.substring(MESSAGE_PREFIX.length(), indexOfSemicolon));
-                result.add(message.substring(indexOfSemicolon + 1, message.length()));
+            Boolean hasTableId = message.contains(SupportedWSCommands.TABLE_ID);
+            Boolean hasCommand = message.contains(SupportedWSCommands.COMMAND);
+            Boolean hasContent = message.contains(SupportedWSCommands.CONTENT);
+            // If and only if message contains tableId, command and content try to parse it
+            if (hasTableId && hasCommand && hasContent) {
+                 result = new JSONObject(message);
             } else {
-                logger.warn("Received message is invalid: " + message);
-                // TODO: Exception handling?
+                throw new JSONException("Unexpected message: " + message + "\n");
             }
         }
         return result;
