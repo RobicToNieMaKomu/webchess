@@ -15,9 +15,9 @@ import org.apache.log4j.Logger;
 /**
  * Servlet responsible for creation of the new connections to the clients
  */
-public class ChatWebSocketServlet extends WebSocketServlet {
+public class ChessWebSocketServlet extends WebSocketServlet {
 
-    private static Logger logger = Logger.getLogger(ChatWebSocketServlet.class);
+    private static Logger logger = Logger.getLogger(WebSocketServlet.class);
     private static final long serialVersionUID = 1L;
     private final AtomicInteger connectionIds = new AtomicInteger(0);
     private static final String TABLE_ID_PREFIX = "chessTableId=";
@@ -34,13 +34,6 @@ public class ChatWebSocketServlet extends WebSocketServlet {
     @Override
     protected StreamInbound createWebSocketInbound(String subProtocol, HttpServletRequest request) {
         ClientMessageInbound result = null;
-        // Retrieve chess table id from request
-        String queryString = request.getQueryString();
-        String sanitizedQueryString = sanitizeQueryString(queryString);
-        if (sanitizedQueryString.isEmpty()) {
-            throw new IllegalArgumentException("Request tried to open a new ws connection without giving table id");
-        }
-        int tableId = Integer.parseInt(sanitizedQueryString);
         // Get username from the request
         Principal userPrincipal = request.getUserPrincipal();
         String userName = userPrincipal.getName();
@@ -49,13 +42,12 @@ public class ChatWebSocketServlet extends WebSocketServlet {
         if (clientMessageInbound == null) {
             // New connection (there are no registred conncetions for this user)
             result = new ClientMessageInbound(userName);
-            wSConnectionManager.addNewWSConnection(result, tableId);
+            wSConnectionManager.createNewWSBinding(result);
             // CANT SEND ANYTHING BEFORE HANDSHAKE!!!
             //wSConnectionManager.broadcastToClientsInChessRoom("hello"+tableId, tableId);
         } else {
             // Another connection (user has connections with at least one table already)
             result = clientMessageInbound;
-            wSConnectionManager.addNewWSConnection(clientMessageInbound, tableId);
             // CANT SEND ANYTHING BEFORE HANDSHAKE!!!
             // wSConnectionManager.broadcastToClientsInChessRoom("hello"+tableId, tableId);
             // TODO:

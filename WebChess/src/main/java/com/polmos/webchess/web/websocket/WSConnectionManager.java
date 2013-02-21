@@ -8,6 +8,7 @@ import java.util.Set;
  */
 public interface WSConnectionManager {
 
+    void createNewWSBinding(ClientMessageInbound wsClientConnection);
     /**
      * Save handler to new opened ws connection
      */

@@ -48,8 +48,8 @@ public class ContextCleaner implements ServletContextListener {
         Connection con = null;
         try {
             String url = "jdbc:postgresql://127.0.0.1:5432/web_chess";
-            String user = "PostgreSQL";
-            String pass = "pass";
+            String user = "postgres";
+            String pass = "fancypassword";
             con = DriverManager.getConnection(url, user, pass);
             logger.warn("connection established: " + con.toString());
         } catch (SQLException x) {

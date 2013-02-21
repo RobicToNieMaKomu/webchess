@@ -21,7 +21,7 @@
     <intercept-url pattern="/welcome" access="isAuthenticated()" />
     <intercept-url pattern="/" access="isAuthenticated()" />
     <intercept-url pattern="/allTables" access="isAuthenticated()" />
-    <intercept-url pattern="/simple*" access="isAuthenticated()" />
+    <intercept-url pattern="/socket" access="isAuthenticated()" />
     <intercept-url pattern="/WebChess/welcome" access="isAuthenticated()" />
     <intercept-url pattern="/**" access="denyAll" />
     <form-login login-page="/login"

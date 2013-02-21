@@ -29,9 +29,9 @@ public class WSConnectionManagerImpl implements WSConnectionManager {
 
     public WSConnectionManagerImpl() {
         // Initializng containers
-        wsConnections = new CopyOnWriteArraySet<ClientMessageInbound>();
-        clientToRoomsMap = new HashMap<ClientMessageInbound, Set<Integer>>();
-        chessTableIdToClientsMap = new HashMap<Integer, Set<ClientMessageInbound>>();
+        wsConnections = new CopyOnWriteArraySet<>();
+        clientToRoomsMap = new HashMap<>();
+        chessTableIdToClientsMap = new HashMap<>();
         logger.debug("WSConnectionManagerImpl created");
     }
 
@@ -41,14 +41,14 @@ public class WSConnectionManagerImpl implements WSConnectionManager {
         // Add room to the clientToRooms map
         Set<Integer> chessRoomIds = clientToRoomsMap.get(wsClientConnection);
         if (chessRoomIds == null) {
-            chessRoomIds = new HashSet<Integer>();
+            chessRoomIds = new HashSet<>();
         }
         chessRoomIds.add(chessTableId);
         clientToRoomsMap.put(wsClientConnection, chessRoomIds);
         // Add client to the roomToClients map
         Set<ClientMessageInbound> clients = chessTableIdToClientsMap.get(chessTableId);
         if (clients == null) {
-            clients = new HashSet<ClientMessageInbound>();
+            clients = new HashSet<>();
         }
         clients.add(wsClientConnection);
         chessTableIdToClientsMap.put(chessTableId, clients);
@@ -63,7 +63,7 @@ public class WSConnectionManagerImpl implements WSConnectionManager {
     public Set<Integer> getChessTableIDs(ClientMessageInbound clientWS) {
         Set<Integer> result = clientToRoomsMap.get(clientWS);
         if (result == null) {
-            result = new HashSet<Integer>();
+            result = new HashSet<>();
         }
         return result;
     }
@@ -72,7 +72,7 @@ public class WSConnectionManagerImpl implements WSConnectionManager {
     public Set<ClientMessageInbound> findWSConnectionsByChessTable(Integer chessTableId) {
         Set<ClientMessageInbound> result = chessTableIdToClientsMap.get(chessTableId);
         if (result == null) {
-            result = new HashSet<ClientMessageInbound>();
+            result = new HashSet<>();
         }
         return result;
     }
@@ -120,5 +120,10 @@ public class WSConnectionManagerImpl implements WSConnectionManager {
     @Override
     public void broadcastToAllClients(String message) {
         // TODO
+    }
+
+    @Override
+    public void createNewWSBinding(ClientMessageInbound wsClientConnection) {
+        this.wsConnections.add(wsClientConnection);
     }
 }

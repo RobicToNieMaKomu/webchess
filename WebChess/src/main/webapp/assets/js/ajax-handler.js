@@ -1,6 +1,7 @@
 var sitButton = "<button class='btn btn-small' type='button'>take a sit</button>";
 var buttonInsideColumn = "<td>" + sitButton + "</td>";
 var noTableCreated = -1;
+var myWindow = null;
 
 $(document).ready(function () {
     insertButtons();
@@ -8,6 +9,7 @@ $(document).ready(function () {
     setButtonHandlers();
     formatTime();
     refresWrapper();
+    connect();
 });
 
 function refresWrapper() {
@@ -50,9 +52,10 @@ function setButtonHandlers() {
 }
 
 function openTable(tableId,color) {
-    var url = "http://localhost:8084/WebChess/table?chessTableId=" + tableId;
+    var url = "http://localhost:8080/WebChess/table?chessTableId=" + tableId;
     myWindow=window.open(url,'','width=850,height=600');
     myWindow.focus();
+    
 }
 
 function refreshContent() {
@@ -65,12 +68,12 @@ function refreshContent() {
             // Id and gameTime parameters should always be not null
             listOfChessTables += "<td>"+table.tableId+"</td>";
             // If sits are empty then add buttons instead of player names
-            if (table.wplayer == null) {
+            if (table.wplayer === null) {
                 listOfChessTables += buttonInsideColumn;
             } else {
                 listOfChessTables += "<td>"+table.wplayer.login+"</td>";
             }
-            if (table.bplayer == null) {
+            if (table.bplayer === null) {
                 listOfChessTables += buttonInsideColumn;
             } else {
                 listOfChessTables += "<td>"+table.bplayer.login+"</td>";
