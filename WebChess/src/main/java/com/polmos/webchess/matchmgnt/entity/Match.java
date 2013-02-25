@@ -1,3 +1,7 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.polmos.webchess.matchmgnt.entity;
 
 import java.io.Serializable;
@@ -15,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author RobicToNieMaKomu
+ * @author Piotrek
  */
 @Entity
 @Table(name = "match", catalog = "web_chess", schema = "webchess_schema")
@@ -23,37 +27,44 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Match.findAll", query = "SELECT m FROM Match m"),
     @NamedQuery(name = "Match.findByMatchId", query = "SELECT m FROM Match m WHERE m.matchId = :matchId"),
-    @NamedQuery(name = "Match.findByProgress", query = "SELECT m FROM Match m WHERE m.progress = :progress")})
+    @NamedQuery(name = "Match.findByHasended", query = "SELECT m FROM Match m WHERE m.hasended = :hasended"),
+    @NamedQuery(name = "Match.findByProgress", query = "SELECT m FROM Match m WHERE m.progress = :progress"),
+    @NamedQuery(name = "Match.findByBplayerTime", query = "SELECT m FROM Match m WHERE m.bplayerTime = :bplayerTime"),
+    @NamedQuery(name = "Match.findByWplayerTime", query = "SELECT m FROM Match m WHERE m.wplayerTime = :wplayerTime")})
 public class Match implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @Column(name = "match_id")
     private Integer matchId;
+    @Column(name = "hasended")
+    private Boolean hasended;
     @Column(name = "progress")
     private String progress;
-    @JoinColumn(name = "bplayerid", referencedColumnName = "id")
+    @Basic(optional = false)
+    @Column(name = "bplayer_time")
+    private int bplayerTime;
+    @Basic(optional = false)
+    @Column(name = "wplayer_time")
+    private int wplayerTime;
+    @JoinColumn(name = "bplayer", referencedColumnName = "id")
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    private User bplayerid;
-    @JoinColumn(name = "wplayerid", referencedColumnName = "id")
+    private User bplayer;
+    @JoinColumn(name = "wplayer", referencedColumnName = "id")
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    private User wplayerid;
-    @Column(name = "hasEnded")
-    private Boolean hasEnded;
-
-    public Boolean getHasEnded() {
-        return hasEnded;
-    }
-
-    public void setHasEnded(Boolean hasEnded) {
-        this.hasEnded = hasEnded;
-    }
+    private User wplayer;
 
     public Match() {
     }
 
     public Match(Integer matchId) {
         this.matchId = matchId;
+    }
+
+    public Match(Integer matchId, int bplayerTime, int wplayerTime) {
+        this.matchId = matchId;
+        this.bplayerTime = bplayerTime;
+        this.wplayerTime = wplayerTime;
     }
 
     public Integer getMatchId() {
@@ -64,6 +75,14 @@ public class Match implements Serializable {
         this.matchId = matchId;
     }
 
+    public Boolean getHasended() {
+        return hasended;
+    }
+
+    public void setHasended(Boolean hasended) {
+        this.hasended = hasended;
+    }
+
     public String getProgress() {
         return progress;
     }
@@ -72,20 +91,36 @@ public class Match implements Serializable {
         this.progress = progress;
     }
 
-    public User getBplayerid() {
-        return bplayerid;
+    public int getBplayerTime() {
+        return bplayerTime;
     }
 
-    public void setBplayerid(User bplayerid) {
-        this.bplayerid = bplayerid;
+    public void setBplayerTime(int bplayerTime) {
+        this.bplayerTime = bplayerTime;
     }
 
-    public User getWplayerid() {
-        return wplayerid;
+    public int getWplayerTime() {
+        return wplayerTime;
     }
 
-    public void setWplayerid(User wplayerid) {
-        this.wplayerid = wplayerid;
+    public void setWplayerTime(int wplayerTime) {
+        this.wplayerTime = wplayerTime;
+    }
+
+    public User getBplayer() {
+        return bplayer;
+    }
+
+    public void setBplayer(User bplayer) {
+        this.bplayer = bplayer;
+    }
+
+    public User getWplayer() {
+        return wplayer;
+    }
+
+    public void setWplayer(User wplayer) {
+        this.wplayer = wplayer;
     }
 
     @Override

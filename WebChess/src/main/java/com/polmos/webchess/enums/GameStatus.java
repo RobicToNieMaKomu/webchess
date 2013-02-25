@@ -4,6 +4,9 @@ package com.polmos.webchess.enums;
  *
  * @author Piotrek
  */
-public enum GameStatus {
-    WHITE_MOVE, BLACK_MOVE, NOT_STARTED, ENDED;
+public class GameStatus {
+    public static final String WHITE_MOVE = "WHITE_MOVE";
+    public static final String BLACK_MOVE = "BLACK_MOVE";
+    public static final String NOT_STARTED = "NOT_STARTED";
+    public static final String ENDED = "ENDED";
 }

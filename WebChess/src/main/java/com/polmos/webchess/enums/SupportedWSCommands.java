@@ -26,6 +26,8 @@ public class SupportedWSCommands {
     public static final String CHESSBOARD_STATE = "CHESSBOARD_STATE";
     // Describes current game preferencies, players, colors, etc..
     public static final String ROOM_STATE = "ROOM_STATE";
+    public static final String PLAYERS = "PLAYERS";
+    public static final String SPECTATORS = "SPECTATORS";
     // Remaining players time
     public static final String TIME = "TIME";
     // Announces end of the game

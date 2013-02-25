@@ -104,8 +104,10 @@ public class WSConnectionManagerImpl implements WSConnectionManager {
             try {
                 CharBuffer buffer = CharBuffer.wrap(message.toCharArray());
                 WsOutbound wsOutbound = connection.getWsOutbound();
-                wsOutbound.writeTextMessage(buffer);
-                wsOutbound.flush();
+                if (wsOutbound != null) {
+                    wsOutbound.writeTextMessage(buffer);
+                    wsOutbound.flush();
+                }
             } catch (IOException ignore) {
                 logger.error("Exception during broadcasting to the chess table with id:" + chessTableId);
             }

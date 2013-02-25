@@ -1,6 +1,7 @@
 package com.polmos.webchess.matchmgnt.service;
 
 import com.polmos.webchess.matchmgnt.entity.Match;
+import com.polmos.webchess.matchmgnt.entity.User;
 import java.util.List;
 
 /**
@@ -10,5 +11,5 @@ import java.util.List;
 public interface MatchService {
     
     List<Match> findAllMatches();
-    void addMatch(Match match);
+    void startNewMatch(User wplayer, User bplayer, Integer gameTime);
 }

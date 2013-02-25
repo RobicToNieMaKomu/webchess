@@ -2,7 +2,9 @@ package com.polmos.webchess.matchmgnt.entity;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,6 +31,10 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
     @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email")})
 public class User implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bplayer", fetch = FetchType.EAGER)
+    private Set<Match> matchSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "wplayer", fetch = FetchType.EAGER)
+    private Set<Match> matchSet1;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -127,6 +133,26 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return this.login;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Set<Match> getMatchSet() {
+        return matchSet;
+    }
+
+    public void setMatchSet(Set<Match> matchSet) {
+        this.matchSet = matchSet;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Set<Match> getMatchSet1() {
+        return matchSet1;
+    }
+
+    public void setMatchSet1(Set<Match> matchSet1) {
+        this.matchSet1 = matchSet1;
     }
     
 }
