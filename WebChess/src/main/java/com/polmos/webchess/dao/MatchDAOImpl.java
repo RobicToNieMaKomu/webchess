@@ -23,9 +23,11 @@ public class MatchDAOImpl implements MatchDAO{
     
     @Transactional
     @Override
-    public void saveMatch(Match chat) {
-        entityManager.persist(chat);
-        logger.debug(chat + " saved");
+    public Integer saveMatch(Match match) {
+        entityManager.persist(match);
+        entityManager.flush();
+        logger.debug(match + " saved");
+        return match.getMatchId();
     }
 
     @Transactional
@@ -38,7 +40,7 @@ public class MatchDAOImpl implements MatchDAO{
     @Transactional
     @Override
     public Set<Match> findAllMatchs() {
-        Set<Match> result = new HashSet<Match>();
+        Set<Match> result = new HashSet<>();
         Query createNamedQuery = entityManager.createNamedQuery("Match.findAll");
         createNamedQuery.getResultList();
        

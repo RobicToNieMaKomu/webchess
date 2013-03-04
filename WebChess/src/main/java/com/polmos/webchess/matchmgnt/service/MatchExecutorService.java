@@ -6,6 +6,6 @@ package com.polmos.webchess.matchmgnt.service;
  */
 public interface MatchExecutorService {
     
-    void start();
+    void start(Integer matchId);
     void cleanMatches();
 }

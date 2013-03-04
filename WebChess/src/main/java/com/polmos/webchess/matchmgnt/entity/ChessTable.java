@@ -6,7 +6,9 @@ package com.polmos.webchess.matchmgnt.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,10 +19,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -36,6 +41,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ChessTable.findByGameTime", query = "SELECT c FROM ChessTable c WHERE c.gameTime = :gameTime"),
     @NamedQuery(name = "ChessTable.findByLastVisitTimestamp", query = "SELECT c FROM ChessTable c WHERE c.lastVisitTimestamp = :lastVisitTimestamp")})
 public class ChessTable implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tableid")
+    private Set<Match> matchSet;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -140,6 +147,16 @@ public class ChessTable implements Serializable {
     @Override
     public String toString() {
         return "com.polmos.webchess.matchmgnt.entity.ChessTable[ tableId=" + tableId + " ]";
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Set<Match> getMatchSet() {
+        return matchSet;
+    }
+
+    public void setMatchSet(Set<Match> matchSet) {
+        this.matchSet = matchSet;
     }
     
 }

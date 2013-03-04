@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.polmos.webchess.matchmgnt.entity;
 
 import java.io.Serializable;
@@ -14,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -48,11 +45,14 @@ public class Match implements Serializable {
     @Column(name = "wplayer_time")
     private int wplayerTime;
     @JoinColumn(name = "bplayer", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User bplayer;
     @JoinColumn(name = "wplayer", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User wplayer;
+    @JoinColumn(name = "tableid", referencedColumnName = "table_id")
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
+    private ChessTable tableid;
 
     public Match() {
     }
@@ -121,6 +121,14 @@ public class Match implements Serializable {
 
     public void setWplayer(User wplayer) {
         this.wplayer = wplayer;
+    }
+
+    public ChessTable getTableid() {
+        return tableid;
+    }
+
+    public void setTableid(ChessTable tableid) {
+        this.tableid = tableid;
     }
 
     @Override
