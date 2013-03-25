@@ -13,7 +13,7 @@ import org.json.JSONObject;
  *
  * @author RobicToNieMaKomu
  */
-public class ChatMessageCreator {
+public class ClientMessageCreator {
 
     private static final String DATE_FORMAT = "HH:mm:ss";
 
@@ -44,7 +44,7 @@ public class ChatMessageCreator {
         Map<String, Integer> remainingTimeMap = new HashMap<>();
         remainingTimeMap.put(SupportedWSCommands.WPLAYER, wpTime);
         remainingTimeMap.put(SupportedWSCommands.BPLAYER, bpTime);
-        result.put(SupportedWSCommands.COMMAND, SupportedWSCommands.STATE);
+        result.put(SupportedWSCommands.COMMAND, SupportedWSCommands.CHESSBOARD_STATE);
         result.put(SupportedWSCommands.TABLE_ID, tableId);
         result.put(SupportedWSCommands.CHESSBOARD_STATE, chessboard);
         result.put(SupportedWSCommands.TIME, remainingTimeMap);

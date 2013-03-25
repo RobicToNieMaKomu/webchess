@@ -1,6 +1,6 @@
 package com.polmos.webchess.service;
 
-import com.polmos.webchess.web.websocket.ChatMessageCreator;
+import com.polmos.webchess.web.websocket.ClientMessageCreator;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.log4j.Logger;
@@ -26,7 +26,7 @@ public class MessageCreatorTest {
         Set<String> specs = new HashSet<>();
         specs.add(EXPECTED_WPLAYER_NAME);
         specs.add(EXPECTED_BPLAYER_NAME);
-        JSONObject json = ChatMessageCreator.createRoomStateMessage(EXPECTED_TABLE_ID, 
+        JSONObject json = ClientMessageCreator.createRoomStateMessage(EXPECTED_TABLE_ID, 
                 EXPECTED_WPLAYER_NAME , EXPECTED_BPLAYER_NAME, specs, EXPEXTED_GAME_TIME);
         logger.debug("output JSON:"+json);
     }

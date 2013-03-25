@@ -2,16 +2,12 @@ package com.polmos.webchess.items;
 
 import com.polmos.webchess.enums.ChessmanEnum;
 import com.polmos.webchess.enums.ColorsEnum;
-import com.polmos.webchess.service.MoveValidator;
-import javax.annotation.Resource;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Piotrek
  */
-@Service("ChessmanPojo")
 public class ChessmanPojo {
 
     private static Logger logger = Logger.getLogger(ChessmanPojo.class);

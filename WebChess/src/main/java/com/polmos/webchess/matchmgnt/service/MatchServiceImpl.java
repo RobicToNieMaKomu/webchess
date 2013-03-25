@@ -4,7 +4,7 @@ import com.polmos.webchess.dao.MatchDAO;
 import com.polmos.webchess.enums.GameStatus;
 import com.polmos.webchess.matchmgnt.entity.Match;
 import com.polmos.webchess.matchmgnt.entity.User;
-import com.polmos.webchess.web.websocket.ChatMessageCreator;
+import com.polmos.webchess.web.websocket.ClientMessageCreator;
 import com.polmos.webchess.web.websocket.WSConnectionManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +20,12 @@ import org.springframework.stereotype.Service;
  */
 @Service("matchService")
 public class MatchServiceImpl implements MatchService {
-    
+
     private static Logger logger = Logger.getLogger(MatchServiceImpl.class);
-    
     @Autowired
     private MatchDAO matchDAO;
-    
     @Autowired
     private WSConnectionManager wSConnectionManager;
-    
     @Autowired
     private MatchExecutorService matchExecutorService;
 
@@ -62,10 +59,65 @@ public class MatchServiceImpl implements MatchService {
         try {
             // Kinda wird methods chain...TODO: fix this
             Integer tableId = match.getTableid().getTableId();
-            JSONObject message = ChatMessageCreator.createChessboardStateMessage(tableId, null, match.getWplayerTime(), match.getBplayerTime());
+            JSONObject message = ClientMessageCreator.createChessboardStateMessage(tableId, null, match.getWplayerTime(), match.getBplayerTime());
             wSConnectionManager.broadcastToClientsInChessRoom(message.toString(), tableId);
         } catch (JSONException ex) {
             logger.error("Error during pushing chessboard state to players:" + ex);
         }
+    }
+
+    @Override
+    public JSONObject processRoomStateRequest(Integer tableId) throws JSONException {
+        
+        JSONObject result = ClientMessageCreator.createChessboardStateMessage(tableId, null, tableId, tableId);
+        return result;
+    }
+
+    @Override
+    public JSONObject processChessboardStateRequest(Integer tableId) throws JSONException {
+        JSONObject result = new JSONObject();
+        return result;
+    }
+
+    @Override
+    public JSONObject processChatRequest() {
+        JSONObject result = new JSONObject();
+        return result;
+    }
+
+    @Override
+    public JSONObject processDrawRequest() {
+        JSONObject result = new JSONObject();
+        return result;
+    }
+
+    @Override
+    public JSONObject processMoveRequest() {
+        JSONObject result = new JSONObject();
+        return result;
+    }
+
+    @Override
+    public JSONObject processOptionsRequest() {
+        JSONObject result = new JSONObject();
+        return result;
+    }
+
+    @Override
+    public JSONObject processReadyRequest() {
+        JSONObject result = new JSONObject();
+        return result;
+    }
+
+    @Override
+    public JSONObject processSitRequest() {
+        JSONObject result = new JSONObject();
+        return result;
+    }
+
+    @Override
+    public JSONObject processSurrenderRequest() {
+        JSONObject result = new JSONObject();
+        return result;
     }
 }

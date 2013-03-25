@@ -1,11 +1,13 @@
 package com.polmos.webchess.web.websocket;
 
 import com.polmos.webchess.enums.SupportedWSCommands;
+import com.polmos.webchess.matchmgnt.service.MatchService;
 import com.polmos.webchess.util.SpringContextProvider;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.util.Set;
+import java.util.logging.Level;
 import org.apache.catalina.websocket.MessageInbound;
 import org.apache.catalina.websocket.WsOutbound;
 import org.apache.log4j.Logger;
@@ -23,12 +25,14 @@ public class ClientMessageInbound extends MessageInbound {
     private static final Logger logger = Logger.getLogger(ClientMessageInbound.class);
     private final String username;
     private WSConnectionManager wSConnectionManager;
+    private MatchService matchService;
 
     public ClientMessageInbound(String clientName) {
         this.username = clientName;
         wSConnectionManager = (WSConnectionManager) SpringContextProvider.applicationContext.getBean("wSConnectionManager");
-        if (wSConnectionManager == null) {
-            logger.error("WS Connection Manager not initialized for a client:" + this);
+        matchService = (MatchService) SpringContextProvider.applicationContext.getBean("matchService");
+        if (wSConnectionManager == null || matchService == null) {
+            logger.error("WS Connection Manager or Match service not initialized for a client:" + this);
         }
     }
 
@@ -56,10 +60,10 @@ public class ClientMessageInbound extends MessageInbound {
             int tableId = json.getInt(SupportedWSCommands.TABLE_ID);
             String command = json.getString(SupportedWSCommands.COMMAND);
             String content = json.getString(SupportedWSCommands.CONTENT);
-            
+
             switch (command) {
                 case SupportedWSCommands.CHAT:
-                    String chatMessage = ChatMessageCreator.createChatMessage(content, this.username);
+                    String chatMessage = ClientMessageCreator.createChatMessage(content, this.username);
                     wSConnectionManager.broadcastToClientsInChessRoom(chatMessage, tableId);
                     break;
                 case SupportedWSCommands.DRAW:
@@ -72,16 +76,21 @@ public class ClientMessageInbound extends MessageInbound {
                     break;
                 case SupportedWSCommands.SIT:
                     break;
-                case SupportedWSCommands.STATE:
+                case SupportedWSCommands.CHESSBOARD_STATE:
+                    JSONObject chessboardStateResponse = matchService.processChessboardStateRequest(tableId);
+                    sendJSONMessage(chessboardStateResponse);
+                    break;
+                case SupportedWSCommands.ROOM_STATE:
+                    JSONObject roomStateResponse = matchService.processRoomStateRequest(tableId);
+                    sendJSONMessage(roomStateResponse);
                     break;
                 case SupportedWSCommands.SURRENDER:
                     break;
                 default:
                     logger.error("Not supported type of a WS command:" + command);
             }
-            
         } catch (JSONException ex) {
-            logger.error("An exception occured while received message from client:"+this.username);
+            logger.error("An exception occured while received message from client:" + this.username);
             logger.error(ex);
         }
     }
@@ -96,14 +105,25 @@ public class ClientMessageInbound extends MessageInbound {
         return this.username;
     }
 
+    private void sendJSONMessage(JSONObject message) {
+        try {
+            CharBuffer buffer = CharBuffer.wrap(message.toString().toCharArray());
+            WsOutbound wsOutbound = getWsOutbound();
+            if (wsOutbound != null) {
+                wsOutbound.writeTextMessage(buffer);
+                wsOutbound.flush();
+            }
+        } catch (IOException ex) {
+            logger.debug("Error during sending message to the client:" + ex);
+        }
+    }
+
     /**
-     * Method sanitizes messeage and checks whether has TABLE_ID, COMMAND and 
-     * CONTENT within.
-     * Format of the expected messages:
-     * "TABLEID:<id>,COMMAND:'<command>',CONTENT:'<content>'" 
-     * Examples: 
-     * "TABLEID:1,COMMAND:'STATE',CONTENT:''" 
-     * "TABLEID:2,COMMAND:'CHAT',CONTENT:'What a splendid day gentlemen!'" 
+     * Method sanitizes messeage and checks whether has TABLE_ID, COMMAND and
+     * CONTENT within. Format of the expected messages:
+     * "TABLEID:<id>,COMMAND:'<command>',CONTENT:'<content>'" Examples:
+     * "TABLEID:1,COMMAND:'ROOM_STATE',CONTENT:''"
+     * "TABLEID:2,COMMAND:'CHAT',CONTENT:'What a splendid day gentlemen!'"
      *
      * @param message
      * @return List containing table id and body
@@ -117,7 +137,7 @@ public class ClientMessageInbound extends MessageInbound {
             Boolean hasContent = message.contains(SupportedWSCommands.CONTENT);
             // If and only if message contains tableId, command and content try to parse it
             if (hasTableId && hasCommand && hasContent) {
-                 result = new JSONObject(message);
+                result = new JSONObject(message);
             } else {
                 throw new JSONException("Unexpected message: " + message + "\n");
             }
