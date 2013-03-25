@@ -21,6 +21,9 @@ public class ChessboardServiceImpl implements ChessboardService {
     private ChessboardPojo chessboard;
     private static Logger logger = Logger.getLogger(ChessboardServiceImpl.class);
     private final Integer PAWN_COUNT = 8;
+    private final Integer FIELDS_COUNT = 64;
+    private final String COLON = ":";
+    private final String DASH = "_";
     public ChessboardServiceImpl() {
         logger.debug("ChessboardServiceImpl is creating...");
     }
@@ -108,5 +111,31 @@ public class ChessboardServiceImpl implements ChessboardService {
     @Override
     public void setDesk(ChessboardPojo chessboard) {
         this.chessboard = chessboard;
+    }
+
+    @Override
+    public String[] serializeChessboard(ChessboardPojo chessboard) {
+        String [] arrayChessboard = new String[FIELDS_COUNT];
+        ChessmanPojo[][] chessBoard = chessboard.getChessBoard();
+        for (int i=0; i<8; i++) {
+            for (int j =0; j<8; j++) {
+                StringBuilder field = new StringBuilder();
+                ChessmanPojo chessman = chessBoard[i][j];
+                if (chessman != null) {
+                Integer columnPosition = chessman.getColumnPosition();
+                Integer rowPosition = chessman.getRowPosition();
+                String colorName = chessman.getColor().getColorName();
+                String type = chessman.getChessmanType().name();
+                field.append(columnPosition);
+                field.append(rowPosition);
+                field.append(COLON);
+                field.append(colorName);
+                field.append(DASH);
+                field.append(type);
+                }
+                arrayChessboard[i*8 + j] = field.toString();
+            }
+        }
+        return arrayChessboard;
     }
 }

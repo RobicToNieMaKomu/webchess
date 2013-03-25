@@ -53,6 +53,9 @@ public class Match implements Serializable {
     @JoinColumn(name = "tableid", referencedColumnName = "table_id")
     @OneToOne(optional = false, fetch = FetchType.LAZY)
     private ChessTable tableid;
+    @Basic(optional = false)
+    @Column(name = "chessboard")
+    private String[] chessboard;
 
     public Match() {
     }

@@ -7,7 +7,9 @@ import com.polmos.webchess.matchmgnt.entity.User;
 import com.polmos.webchess.web.websocket.ClientMessageCreator;
 import com.polmos.webchess.web.websocket.WSConnectionManager;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +30,11 @@ public class MatchServiceImpl implements MatchService {
     private WSConnectionManager wSConnectionManager;
     @Autowired
     private MatchExecutorService matchExecutorService;
+    private Map<Integer, Integer> matchIdToChessboardIdMap;
+
+    public MatchServiceImpl() {
+        matchIdToChessboardIdMap = new HashMap<>();
+    }
 
     @Override
     public List<Match> findAllMatches() {
@@ -68,7 +75,7 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     public JSONObject processRoomStateRequest(Integer tableId) throws JSONException {
-        
+
         JSONObject result = ClientMessageCreator.createChessboardStateMessage(tableId, null, tableId, tableId);
         return result;
     }

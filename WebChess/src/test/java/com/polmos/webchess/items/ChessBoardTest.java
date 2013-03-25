@@ -29,6 +29,7 @@ public class ChessBoardTest {
     private ChessboardPojo chessboard;
     private static final Logger logger = Logger.getLogger(ChessBoardTest.class);
     private final Integer CHESSMEN_COUNT = 32;
+    private final Integer FIELDS_COUNT = 64;
     
     
     @Before
@@ -50,5 +51,14 @@ public class ChessBoardTest {
             }
         }
         assertThat(chessmen_count, is(CHESSMEN_COUNT));
+    }
+    
+    @Test
+    public void serializeChessboardTest() {
+        String[] serializedChessboard = chessboardService.serializeChessboard(chessboard);
+        for (int i = 0; i < serializedChessboard.length; i++) {
+            logger.debug("field i:"+ i + "="+serializedChessboard[i]);
+        }
+        assertThat(serializedChessboard.length, is(FIELDS_COUNT));
     }
 }
