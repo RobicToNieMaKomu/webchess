@@ -1,7 +1,8 @@
 // Global variables
 var SUFFIX = '.png';
 var ctx = null;
-var glassCtx = null;
+var chessmenCanvasCtx = null;
+var glassCanvasCtx = null;
 var width = 480;
 var height = 480;
 var piecesImg = null;
@@ -9,23 +10,22 @@ var chessboard = null;
 var startX = -1;
 var startY = -1;
 var canvas = null;
-var glass = null;
+var chessmenCanvas = null;
+var glassCanvas = null;
 
 $(document).ready(function() {
+    // Initialize canvases
     canvas = document.getElementById("chessboardCanvas");
-    glass = document.getElementById("glassLayer");
-    /* make it fill the whole screen */
-    //canvas.width = width;
-    //canvas.height = height;
-    //glass.width = width;
-    //glass.height = height;
-    /* get rendering context */
+    chessmenCanvas = document.getElementById("chessmenCanvas");
+    glassCanvas = document.getElementById("glassCanvas");
+    // Initialize contex for each canvas
     ctx = canvas.getContext("2d");
-    ctx.globalAlpha = 0.85;
-    glassCtx = glass.getContext("2d");
+    glassCanvasCtx = glassCanvas.getContext("2d");
+    chessmenCanvasCtx = chessmenCanvas.getContext("2d");
+    // Add listeners, draw chessbord, load pieces, etc. 
     drawChessboard(ctx, canvas.width);
     loadPieces();
-    addMouseHandlers(canvas);
+    addMouseHandlers(chessmenCanvas); // Because this is the foreground layer
 });
 
 function addMouseHandlers(canvas) {
@@ -49,7 +49,7 @@ function canvasMouseDown(event) {
 }
 
 function highlightSquare(event) {
-    glassCtx.clearRect(0, 0, width , height);
+    glassCanvasCtx.clearRect(0, 0, width , height);
     var squareWidth = width / 8;
     var x = Math.floor(getAbsoluteMousePosition(event).x / squareWidth);
     var y = Math.floor(getAbsoluteMousePosition(event).y / squareWidth);
@@ -72,17 +72,13 @@ function getAbsoluteMousePosition(event) {
 
 
 function highlightField(x, y, squareWidth, hasBackground) {
-    glassCtx.fillStyle = 'blue';
-    glassCtx.fillRect(x * squareWidth, y * squareWidth, squareWidth, squareWidth);
+    glassCanvasCtx.fillStyle = 'blue';
+    glassCanvasCtx.fillRect(x * squareWidth, y * squareWidth, squareWidth, squareWidth);
     if (!hasBackground) {
-    glassCtx.fillStyle = 'white';
-    var offset = 4;
-    glassCtx.fillRect(x * squareWidth + offset, y * squareWidth + offset, squareWidth - 2 * offset, squareWidth - 2 * offset);
+        glassCanvasCtx.fillStyle = 'white';
+        var offset = 4;
+        glassCanvasCtx.fillRect(x * squareWidth + offset, y * squareWidth + offset, squareWidth - 2 * offset, squareWidth - 2 * offset);
     }
-}
-
-function dragPiece(event) {
-    
 }
 
 function drawChessboard(ctx, width) {
@@ -96,7 +92,6 @@ function drawChessboard(ctx, width) {
         // Vertical lines
         ctx.moveTo(squareWidth * i, 0);
         ctx.lineTo(squareWidth * i, width);
-
     }
     ctx.stroke();
     // Draw and fill squares
@@ -147,7 +142,7 @@ function drawPieces() {
         var sy = sprite.frame.y;
         var dx = column * squareWidth;
         var dy = (7 - row) * squareWidth;
-        ctx.drawImage(piecesImg, sx, sy, sw, sh, dx, dy, squareWidth, squareWidth);
+        chessmenCanvasCtx.drawImage(piecesImg, sx, sy, sw, sh, dx, dy, squareWidth, squareWidth);
     }
 }
 
