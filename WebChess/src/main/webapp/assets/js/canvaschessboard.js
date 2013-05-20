@@ -25,7 +25,9 @@ $(document).ready(function() {
     // Add listeners, draw chessbord, load pieces, etc. 
     drawChessboard(ctx, canvas.width);
     loadPieces();
-    addMouseHandlers(chessmenCanvas); // Because this is the foreground layer
+    addMouseHandlers(chessmenCanvas); // ChessmenCanvas because it is the foreground layer
+    // Finally, request room status (chessboard status, players, game time, etc.)
+    requestCurrentRoomState();
 });
 
 function addMouseHandlers(canvas) {
@@ -112,14 +114,15 @@ function drawChessboard(ctx, width) {
 function loadPieces() {
     var img = new Image();
     img.onload = loadImage;
-    img.src = '../../assets/img/pieces.png';
+    //img.src = '../../assets/img/pieces.png'; // test env    
+    img.src = 'http://localhost:8080/WebChess/img/pieces.png';
 
     function loadImage() {
         piecesImg = this;
         console.log('pieces loaded!');
-        var board = {'00': 'wr', '11': 'wc', '77': 'br', '20': 'wp', '40': 'wking', '01': 'wp', '12': 'bp'};
-        chessboard = JSON.stringify(board);
-        drawPieces();
+        //var board = {'00': 'wr', '11': 'wc', '77': 'br', '20': 'wp', '40': 'wking', '01': 'wp', '12': 'bp'};
+        //chessboard = JSON.stringify(board);
+        //drawPieces();
     }
 }
 /**

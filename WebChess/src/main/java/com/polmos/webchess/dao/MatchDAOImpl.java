@@ -2,6 +2,7 @@ package com.polmos.webchess.dao;
 
 import com.polmos.webchess.matchmgnt.entity.Match;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -53,6 +54,20 @@ public class MatchDAOImpl implements MatchDAO{
         Match merge = entityManager.merge(match);
         entityManager.remove(merge);
         logger.debug(match + " removed");
+    }
+
+    @Transactional
+    @Override
+    public Match findMatchByTableId(Integer tableId) {
+        Match result = null;
+        Query query = entityManager.createNamedQuery("Match.findByTableId");
+        query.setParameter("tableid", tableId);
+        List<Match> resultList = query.getResultList();
+        if (resultList != null && !resultList.isEmpty()) {
+            // ReturnList should always have at most 1 element (0 or 1)
+            result = resultList.get(0);
+        }
+        return result;
     }
     
 }

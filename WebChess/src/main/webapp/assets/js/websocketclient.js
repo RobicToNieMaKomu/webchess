@@ -15,8 +15,15 @@ function connect() {
         console.log('WebSocket connection opened.');
     };
     ws.onmessage = function(event) {
+        
         console.log(event.data);
-        myWindow.sayHello(event.data);
+        if (event.data !== null && event.data !== undefined) {
+            // TODO: send message to proper receiver (table)
+            var tableHandler = findTableHandlerById(event.data.tableId);
+            if (tableHandler !== null) {
+                handleIncomingServerMessage(event.data);
+            }
+        }
     };
     ws.onclose = function() {
         window.alert("Connection with the server closed.");
@@ -41,8 +48,9 @@ function log(message) {
     $("#logs").append(message);
 }
 
+
 /**
- * This function is called from children of this window
+ * This function is called by children of this window
  * @param {type} myVal
  * @returns {undefined}
  */

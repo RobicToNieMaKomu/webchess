@@ -12,6 +12,8 @@ public interface MatchDAO {
     Integer saveMatch(Match chat);
 
     Match findMatchById(Integer id);
+    
+    Match findMatchByTableId(Integer tableId);
 
     Set<Match> findAllMatchs();
 

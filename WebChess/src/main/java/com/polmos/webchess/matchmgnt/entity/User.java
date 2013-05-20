@@ -1,7 +1,10 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.polmos.webchess.matchmgnt.entity;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -19,7 +22,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
- * @author RobicToNieMaKomu
+ * @author NWVT34
  */
 @Entity
 @Table(name = "user", catalog = "web_chess", schema = "webchess_schema")
@@ -27,29 +30,29 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @NamedQueries({
     @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
     @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
+    @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
     @NamedQuery(name = "User.findByLogin", query = "SELECT u FROM User u WHERE u.login = :login"),
-    @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
-    @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email")})
+    @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password")})
 public class User implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bplayer", fetch = FetchType.EAGER)
-    private Set<Match> matchSet;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "wplayer", fetch = FetchType.EAGER)
-    private Set<Match> matchSet1;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+    @Column(name = "email")
+    private String email;
     @Column(name = "login")
     private String login;
     @Column(name = "password")
     private String password;
-    @Column(name = "email")
-    private String email;
     @OneToMany(mappedBy = "wplayer", fetch = FetchType.EAGER)
-    private List<ChessTable> chessTableList;
+    private Set<ChessTable> chessTableSet;
     @OneToMany(mappedBy = "bplayer", fetch = FetchType.EAGER)
-    private List<ChessTable> chessTableList1;
+    private Set<ChessTable> chessTableSet1;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "wplayer", fetch = FetchType.EAGER)
+    private Set<Match> matchSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bplayer", fetch = FetchType.EAGER)
+    private Set<Match> matchSet1;
 
     public User() {
     }
@@ -64,6 +67,14 @@ public class User implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getLogin() {
@@ -82,32 +93,44 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+    @XmlTransient
+    @JsonIgnore
+    public Set<ChessTable> getChessTableSet() {
+        return chessTableSet;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setChessTableSet(Set<ChessTable> chessTableSet) {
+        this.chessTableSet = chessTableSet;
     }
 
     @XmlTransient
     @JsonIgnore
-    public List<ChessTable> getChessTableList() {
-        return chessTableList;
+    public Set<ChessTable> getChessTableSet1() {
+        return chessTableSet1;
     }
 
-    public void setChessTableList(List<ChessTable> chessTableList) {
-        this.chessTableList = chessTableList;
+    public void setChessTableSet1(Set<ChessTable> chessTableSet1) {
+        this.chessTableSet1 = chessTableSet1;
     }
 
     @XmlTransient
     @JsonIgnore
-    public List<ChessTable> getChessTableList1() {
-        return chessTableList1;
+    public Set<Match> getMatchSet() {
+        return matchSet;
     }
 
-    public void setChessTableList1(List<ChessTable> chessTableList1) {
-        this.chessTableList1 = chessTableList1;
+    public void setMatchSet(Set<Match> matchSet) {
+        this.matchSet = matchSet;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Set<Match> getMatchSet1() {
+        return matchSet1;
+    }
+
+    public void setMatchSet1(Set<Match> matchSet1) {
+        this.matchSet1 = matchSet1;
     }
 
     @Override
@@ -132,27 +155,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return this.login;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Set<Match> getMatchSet() {
-        return matchSet;
-    }
-
-    public void setMatchSet(Set<Match> matchSet) {
-        this.matchSet = matchSet;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Set<Match> getMatchSet1() {
-        return matchSet1;
-    }
-
-    public void setMatchSet1(Set<Match> matchSet1) {
-        this.matchSet1 = matchSet1;
+        return "com.polmos.webchess.matchmgnt.entity.User[ id=" + id + " ]";
     }
     
 }

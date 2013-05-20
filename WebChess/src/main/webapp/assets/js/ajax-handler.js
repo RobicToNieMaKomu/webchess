@@ -1,7 +1,11 @@
 var sitButton = "<button class='btn btn-small' type='button'>take a sit</button>";
 var buttonInsideColumn = "<td>" + sitButton + "</td>";
 var noTableCreated = -1;
-var myWindow = null;
+var tableHandlers = [];
+function TableWrapper(id, handler) {
+    this.id = id,
+    this.handler = handler;
+}
 
 $(document).ready(function () {
     insertButtons();
@@ -53,9 +57,19 @@ function setButtonHandlers() {
 
 function openTable(tableId,color) {
     var url = "http://localhost:8080/WebChess/table?chessTableId=" + tableId;
-    myWindow=window.open(url,'','width=850,height=600');
+    var myWindow=window.open(url,'','width=850,height=600');
     myWindow.focus();
-    
+    var windowWrapper = new TableWrapper(tableId, myWindow);
+    tableHandlers.push(windowWrapper);  
+}
+
+function findTableHandlerById(id) {
+    for (var i = 0; i < tableHandlers.length; i++){
+        var windowWrapper = tableHandlers[i];
+        if (windowWrapper.id === id) {
+            return windowWrapper.handler;
+        }
+    }
 }
 
 function refreshContent() {

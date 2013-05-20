@@ -30,6 +30,18 @@ function requestSeat(color) {
     window.opener.sendMessage(jsonString);
 }
 
+function requestCurrentRoomState() {
+    var requestPositions = createMessage('ROOM_STATE','');
+    var jsonString = JSON.stringify(requestPositions);
+    window.opener.sendMessage(jsonString);    
+}
+
+function requestCurrentChessmenPositions() {
+    var requestPositions = createMessage('CHESSBOARD_STATE','');
+    var jsonString = JSON.stringify(requestPositions);
+    window.opener.sendMessage(jsonString);    
+}
+
 /**
  * Creates message that will be sent to the server
  * 
@@ -45,7 +57,7 @@ function createMessage(command, content) {
     return result;
 }
 
-function incomingServerMessages(msg) {
+function handleIncomingServerMessage(msg) {
     console.log(msg);
     if (msg.COMMAND === '') {
         
