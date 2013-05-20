@@ -2,6 +2,7 @@ package com.polmos.webchess.matchmgnt.service;
 
 import com.polmos.webchess.dao.MatchDAO;
 import com.polmos.webchess.enums.GameStatus;
+import com.polmos.webchess.exceptions.WebChessException;
 import com.polmos.webchess.items.ChessboardPojo;
 import com.polmos.webchess.matchmgnt.entity.Match;
 import com.polmos.webchess.matchmgnt.entity.User;
@@ -10,8 +11,10 @@ import com.polmos.webchess.web.websocket.ClientMessageCreator;
 import com.polmos.webchess.web.websocket.WSConnectionManager;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Service;
 public class MatchServiceImpl implements MatchService {
 
     private static Logger logger = Logger.getLogger(MatchServiceImpl.class);
+    private final Integer DEFAULT_GAME_TIME = 900;
     @Autowired
     private MatchDAO matchDAO;
     @Autowired
@@ -76,16 +80,28 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public JSONObject processRoomStateRequest(Integer tableId) throws JSONException {
+    public JSONObject processRoomStateRequest(Integer tableId) throws JSONException, WebChessException {
         // Only one match can be assigned to table in one time
         Match match = matchDAO.findMatchByTableId(tableId);
+        Map<String, String> mapChessboard = null;
+        Integer wpTime = DEFAULT_GAME_TIME;
+        Integer bpTime = DEFAULT_GAME_TIME;
+        String wPlayerName = "";
+        String bPlayerName = "";
+        Set<String> spectators = new HashSet<>();
         if (match == null) {
             // If there is no match assigned to this table, then associate TEMPLATE 
             // (default game time, no players, etc ...)
-            ChessboardPojo initChessboard = chessboardService.createNewChessboard();
+            ChessboardPojo newChessboard = chessboardService.createNewChessboard();
+            mapChessboard = chessboardService.transformChessboardTableToMap(newChessboard);
+        } else {
+            bpTime = match.getBplayerTime();
+            wpTime = match.getWplayerTime();
+            wPlayerName = match.getWplayer().getLogin();
+            bPlayerName = match.getBplayer().getLogin();
+            // TBD: spectators
         }
-        Map<String, String> mapChessboard = new HashMap<>(); //TODO: ChessboardPojo to map translation
-        JSONObject result = ClientMessageCreator.createChessboardStateMessage(tableId, mapChessboard, 10, 10);
+        JSONObject result = ClientMessageCreator.createRoomStateMessage(tableId, wPlayerName, bPlayerName, spectators, mapChessboard, wpTime, bpTime);
         return result;
     }
 

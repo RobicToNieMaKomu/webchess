@@ -32,6 +32,10 @@ public enum ColumnEnum {
     public void setColumn(String column) {
         this.column = column;
     }
+    
+    public String getColumnNameLowerCase() {
+        return this.toString().toLowerCase();
+    }
 
     public static ColumnEnum convertColumnPosition(Integer column) throws WebChessException {
         switch (column) {

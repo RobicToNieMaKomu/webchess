@@ -1,10 +1,14 @@
 package com.polmos.webchess.service;
 
+import com.polmos.webchess.enums.ChessmanEnum;
 import com.polmos.webchess.enums.ColorsEnum;
 import com.polmos.webchess.enums.ColumnEnum;
 import com.polmos.webchess.enums.RowEnum;
+import com.polmos.webchess.exceptions.WebChessException;
 import com.polmos.webchess.items.ChessboardPojo;
 import com.polmos.webchess.items.ChessmanPojo;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -21,9 +25,11 @@ public class ChessboardServiceImpl implements ChessboardService {
     private ChessboardPojo chessboard;
     private static Logger logger = Logger.getLogger(ChessboardServiceImpl.class);
     private final Integer PAWN_COUNT = 8;
+    private final Integer ROW_COUNT = 8;
     private final Integer FIELDS_COUNT = 64;
     private final String COLON = ":";
     private final String DASH = "_";
+
     public ChessboardServiceImpl() {
         logger.debug("ChessboardServiceImpl is creating...");
     }
@@ -115,27 +121,89 @@ public class ChessboardServiceImpl implements ChessboardService {
 
     @Override
     public String[] serializeChessboard(ChessboardPojo chessboard) {
-        String [] arrayChessboard = new String[FIELDS_COUNT];
+        String[] arrayChessboard = new String[FIELDS_COUNT];
         ChessmanPojo[][] chessBoard = chessboard.getChessBoard();
-        for (int i=0; i<8; i++) {
-            for (int j =0; j<8; j++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 StringBuilder field = new StringBuilder();
                 ChessmanPojo chessman = chessBoard[i][j];
                 if (chessman != null) {
-                Integer columnPosition = chessman.getColumnPosition();
-                Integer rowPosition = chessman.getRowPosition();
-                String colorName = chessman.getColor().getColorName();
-                String type = chessman.getChessmanType().name();
-                field.append(columnPosition);
-                field.append(rowPosition);
-                field.append(COLON);
-                field.append(colorName);
-                field.append(DASH);
-                field.append(type);
+                    Integer columnPosition = chessman.getColumnPosition();
+                    Integer rowPosition = chessman.getRowPosition();
+                    String colorName = chessman.getColor().getColorName();
+                    String type = chessman.getChessmanType().name();
+                    field.append(columnPosition);
+                    field.append(rowPosition);
+                    field.append(COLON);
+                    field.append(colorName);
+                    field.append(DASH);
+                    field.append(type);
                 }
-                arrayChessboard[i*8 + j] = field.toString();
+                arrayChessboard[i * 8 + j] = field.toString();
             }
         }
         return arrayChessboard;
+    }
+
+    @Override
+    public Map<String, String> transformChessboardTableToMap(ChessboardPojo chessboard) throws WebChessException {
+        Map<String, String> result = new HashMap<>();
+        logger.debug("Transforming chessboard POJO to map");
+        if (chessboard != null) {
+            ChessmanPojo[][] chessBoard = chessboard.getChessBoard();
+            if (chessBoard != null && chessBoard.length == ROW_COUNT) {
+                for (int i = 0; i < 8; i++) {
+                    for (int j = 0; j < 8; j++) {
+                        ChessmanPojo pojo = chessBoard[i][j];
+                        String jsonValue = transformPojoToJSONString(pojo);
+                        String columnName = ColumnEnum.convertColumnPosition(i).getColumnNameLowerCase();
+                        String rowName = RowEnum.convertRowPosition(j).getRowNumber().toString();
+                        result.put(columnName+rowName, jsonValue);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Transforms chessman POJO to string value that can be recognized by
+     * client's JS parser. Example: White King -> 'wking'; Black Pawn -> 'bp'
+     *
+     * @param pojo
+     * @return String value
+     */
+    private String transformPojoToJSONString(ChessmanPojo pojo) {
+        String result = "";
+        if (pojo != null) {
+            ChessmanEnum chessmanType = pojo.getChessmanType();
+            ColorsEnum color = pojo.getColor();
+            logger.debug("Transforming chessman: " + color + " " + chessmanType + " to JSON property");
+            result = pojo.getColor().getShortColorName();
+            switch (chessmanType) {
+                case BISHOP:
+                    result = result.concat("b");
+                    break;
+                case KING:
+                    result = result.concat("king");
+                    break;
+                case KNIGHT:
+                    result = result.concat("k");
+                    break;
+                case PAWN:
+                    result = result.concat("p");
+                    break;
+                case QUEEN:
+                    result = result.concat("q");
+                    break;
+                case ROOK:
+                    result = result.concat("r");
+                    break;
+                default:
+                    logger.error("Unknown chessman type: " + chessmanType);
+                    break;
+            }
+        }
+        return result;
     }
 }

@@ -4,10 +4,12 @@
  */
 package com.polmos.webchess.items;
 
+import com.polmos.webchess.exceptions.WebChessException;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import com.polmos.webchess.service.ChessboardService;
+import java.util.Map;
 import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -30,6 +32,7 @@ public class ChessBoardTest {
     private static final Logger logger = Logger.getLogger(ChessBoardTest.class);
     private final Integer CHESSMEN_COUNT = 32;
     private final Integer FIELDS_COUNT = 64;
+    private final Integer EXPECTED_ROW_COUNT = 8;
     
     
     @Before
@@ -60,5 +63,13 @@ public class ChessBoardTest {
             logger.debug("field i:"+ i + "="+serializedChessboard[i]);
         }
         assertThat(serializedChessboard.length, is(FIELDS_COUNT));
+    }
+    
+    @Test
+    public void transformChessboardTableToMapTest() throws WebChessException {
+        logger.debug("transformChessboardTableToMapTest started...");
+        Map<String, String> resultMap = chessboardService.transformChessboardTableToMap(chessboard);
+        logger.debug(resultMap);
+        assertThat(resultMap.entrySet().size(), is(FIELDS_COUNT));
     }
 }

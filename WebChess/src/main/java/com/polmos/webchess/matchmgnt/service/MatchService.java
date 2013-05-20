@@ -1,5 +1,6 @@
 package com.polmos.webchess.matchmgnt.service;
 
+import com.polmos.webchess.exceptions.WebChessException;
 import com.polmos.webchess.matchmgnt.entity.Match;
 import com.polmos.webchess.matchmgnt.entity.User;
 import java.util.List;
@@ -29,7 +30,7 @@ public interface MatchService {
      * @param tableId - id of the chess room/table
      * @return JSON response for the client
      */
-    JSONObject processRoomStateRequest(Integer tableId) throws JSONException;
+    JSONObject processRoomStateRequest(Integer tableId) throws JSONException, WebChessException;
 
     /**
      * Method creates response containing game state (current position on the

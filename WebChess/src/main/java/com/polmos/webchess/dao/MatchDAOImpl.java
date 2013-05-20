@@ -1,5 +1,6 @@
 package com.polmos.webchess.dao;
 
+import com.polmos.webchess.matchmgnt.entity.ChessTable;
 import com.polmos.webchess.matchmgnt.entity.Match;
 import java.util.HashSet;
 import java.util.List;
@@ -60,8 +61,9 @@ public class MatchDAOImpl implements MatchDAO{
     @Override
     public Match findMatchByTableId(Integer tableId) {
         Match result = null;
+        ChessTable chessTable = entityManager.find(ChessTable.class, tableId);
         Query query = entityManager.createNamedQuery("Match.findByTableId");
-        query.setParameter("tableid", tableId);
+        query.setParameter("tableid", chessTable);
         List<Match> resultList = query.getResultList();
         if (resultList != null && !resultList.isEmpty()) {
             // ReturnList should always have at most 1 element (0 or 1)

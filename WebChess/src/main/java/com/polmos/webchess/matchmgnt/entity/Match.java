@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Match.findAll", query = "SELECT m FROM Match m"),
     @NamedQuery(name = "Match.findByMatchId", query = "SELECT m FROM Match m WHERE m.matchId = :matchId"),
-    @NamedQuery(name = "Match.findByTableId", query = "SELECT m FROM Match m WHERE m.tableid = ?1"),
+    @NamedQuery(name = "Match.findByTableId", query = "SELECT m FROM Match m WHERE m.tableid = :tableid"),
     @NamedQuery(name = "Match.findByBplayerTime", query = "SELECT m FROM Match m WHERE m.bplayerTime = :bplayerTime"),
     @NamedQuery(name = "Match.findByHasended", query = "SELECT m FROM Match m WHERE m.hasended = :hasended"),
     @NamedQuery(name = "Match.findByProgress", query = "SELECT m FROM Match m WHERE m.progress = :progress"),

@@ -1,6 +1,7 @@
 package com.polmos.webchess.web.websocket;
 
 import com.polmos.webchess.enums.SupportedWSCommands;
+import com.polmos.webchess.exceptions.WebChessException;
 import com.polmos.webchess.matchmgnt.service.MatchService;
 import com.polmos.webchess.util.SpringContextProvider;
 import java.io.IOException;
@@ -89,7 +90,7 @@ public class ClientMessageInbound extends MessageInbound {
                 default:
                     logger.error("Not supported type of a WS command:" + command);
             }
-        } catch (JSONException ex) {
+        } catch (JSONException | WebChessException ex) {
             logger.error("An exception occured while received message from client:" + this.username);
             logger.error(ex);
         }
@@ -119,7 +120,7 @@ public class ClientMessageInbound extends MessageInbound {
     }
 
     /**
-     * Method sanitizes messeage and checks whether has TABLE_ID, COMMAND and
+     * Method sanitizes message and checks whether has TABLE_ID, COMMAND and
      * CONTENT within. Format of the expected messages:
      * "TABLEID:<id>,COMMAND:'<command>',CONTENT:'<content>'" Examples:
      * "TABLEID:1,COMMAND:'ROOM_STATE',CONTENT:''"

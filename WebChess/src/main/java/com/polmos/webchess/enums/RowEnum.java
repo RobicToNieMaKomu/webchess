@@ -11,16 +11,20 @@ public enum RowEnum {
     ONE(0), TWO(1), THREE(2), FOUR(3), FIVE(4), SIX(5), SEVEN(6), EIGHT(7);
     private Integer rowNumber;
 
-    RowEnum(int rowNumber) {
+    RowEnum(Integer rowNumber) {
         this.rowNumber = rowNumber;
     }
 
-    public int getRowNumber() {
+    public Integer getRowNumber() {
         return rowNumber;
     }
 
     public void setRowNumber(int rowNumber) {
         this.rowNumber = rowNumber;
+    }
+    
+    public String getRowNameLowerCase() {
+        return this.toString().toLowerCase();
     }
     
      public static RowEnum convertRowPosition(Integer row) throws WebChessException {

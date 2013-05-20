@@ -20,4 +20,14 @@ public enum ColorsEnum {
     public void setColorName(String colorName) {
         this.colorName = colorName;
     }
+    
+    public String getShortColorName() {
+        String result = "";
+        if (WHITE.equals(this)) {
+            result = "w";
+        } else if (BLACK.equals(this)) {
+            result = "b";
+        }
+        return result;
+    }
 }
