@@ -59,7 +59,7 @@ function openTable(tableId,color) {
     var url = "http://localhost:8080/WebChess/table?chessTableId=" + tableId;
     var myWindow=window.open(url,'','width=850,height=600');
     myWindow.focus();
-    var windowWrapper = new TableWrapper(tableId, myWindow);
+    var windowWrapper = new TableWrapper(parseInt(tableId), myWindow);
     tableHandlers.push(windowWrapper);  
 }
 

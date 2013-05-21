@@ -42,10 +42,10 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <button id="wbutton" class="btn btn-primary" type="button" th:text="${wplayer} ? ${wplayer.login}:#{table.sit_button}">take a sit</button>
+                                    <button id="wbutton" class="btn btn-primary" type="button" th:text="#{table.sit_button}">take a sit</button>
                                 </td>
                                 <td>
-                                    <button id="bbutton" class="btn btn-primary" type="button" th:text="${bplayer} ? ${bplayer.login}:#{table.sit_button}">take a sit</button>
+                                    <button id="bbutton" class="btn btn-primary" type="button" th:text="#{table.sit_button}">take a sit</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -72,15 +72,15 @@
                                 <a href="#logs" data-toggle="tab">Logs</a>
                             </li>
                             <li>
-                                <a href="#spectactors" data-toggle="tab">Spectactors</a>
+                                <a href="#spectactors" data-toggle="tab">Spectators</a>
                             </li>
                         </ul>
                         <div id="myTabContent" class="tab-content">
                             <div class="tab-pane fade in active" id="logs">
                                 <p>Here will be lot of logs</p>
                             </div>
-                            <div class="tab-pane fade" id="spectactors">
-                                <p>Here will be list of the spectactors</p>
+                            <div class="tab-pane fade" id="spectators">
+                                <p>Here will be list of the spectators</p>
                             </div>
                         </div>
                     </div>

@@ -17,6 +17,7 @@ import org.json.JSONObject;
 public class ClientMessageCreator {
 
     private static final String DATE_FORMAT = "HH:mm:ss";
+    private static final Integer NA = -1;
 
     public static String createChatMessage(String content, String username) {
         StringBuilder message = new StringBuilder();
@@ -32,36 +33,37 @@ public class ClientMessageCreator {
     /**
      * Creates message containing information about situation on the chessboard
      * and remaining players time.
-     * 
+     *
      * @param tableId
      * @param chessboard
      * @param wpTime
      * @param bpTime
      * @return
-     * @throws JSONException 
+     * @throws JSONException
      */
     public static JSONObject createChessboardStateMessage(Integer tableId, Map<String, String> chessboard, Integer wpTime, Integer bpTime) throws JSONException {
-        JSONObject result = createRoomStateMessage(tableId, "", "", new HashSet<String>(), chessboard, wpTime, bpTime); 
+        JSONObject result = createRoomStateMessage(tableId, "", "", new HashSet<String>(), chessboard, wpTime, bpTime);
         result.put(SupportedWSCommands.COMMAND, SupportedWSCommands.CHESSBOARD_STATE);
         return result;
     }
+
     /**
      * Creates message containing information about chess table.
-     * 
+     *
      * @param tableId
      * @param wPlayerName
      * @param bPlayerName
      * @param spectators
      * @param proposedGameTime
      * @return filled JSON that can be sent directly to client
-     * @throws JSONException 
+     * @throws JSONException
      */
     public static JSONObject createRoomStateMessage(Integer tableId, String wPlayerName, String bPlayerName, Set<String> spectators, Map<String, String> chessboard, Integer wpTime, Integer bpTime) throws JSONException {
         JSONObject result = new JSONObject();
         Map<String, String> players = new HashMap<>();
         Map<String, String> options = new HashMap<>();
         Map<String, Integer> remainingTimeMap = new HashMap<>();
-        
+
         players.put(SupportedWSCommands.WPLAYER, wPlayerName);
         players.put(SupportedWSCommands.BPLAYER, bPlayerName);
 
@@ -75,7 +77,13 @@ public class ClientMessageCreator {
         result.put(SupportedWSCommands.TIME, remainingTimeMap);
         result.put(SupportedWSCommands.SPECTATORS, spectators);
         result.put(SupportedWSCommands.OPTIONS, options);
-        
+
+        return result;
+    }
+
+    public static JSONObject createResponseToSitRequestMessage(Integer tableId, String wPlayerName, String bPlayerName) throws JSONException {
+        JSONObject result = createRoomStateMessage(tableId, wPlayerName, bPlayerName, new HashSet<String>(), new HashMap<String, String>(), NA, NA);
+        result.put(SupportedWSCommands.COMMAND, SupportedWSCommands.SIT);
         return result;
     }
 

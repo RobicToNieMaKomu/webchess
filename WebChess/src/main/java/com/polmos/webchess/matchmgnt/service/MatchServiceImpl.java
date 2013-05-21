@@ -1,9 +1,13 @@
 package com.polmos.webchess.matchmgnt.service;
 
+import com.polmos.webchess.dao.ChessTableDAO;
 import com.polmos.webchess.dao.MatchDAO;
+import com.polmos.webchess.enums.ColorsEnum;
 import com.polmos.webchess.enums.GameStatus;
+import com.polmos.webchess.enums.SupportedWSCommands;
 import com.polmos.webchess.exceptions.WebChessException;
 import com.polmos.webchess.items.ChessboardPojo;
+import com.polmos.webchess.matchmgnt.entity.ChessTable;
 import com.polmos.webchess.matchmgnt.entity.Match;
 import com.polmos.webchess.matchmgnt.entity.User;
 import com.polmos.webchess.service.ChessboardService;
@@ -32,6 +36,8 @@ public class MatchServiceImpl implements MatchService {
     private final Integer DEFAULT_GAME_TIME = 900;
     @Autowired
     private MatchDAO matchDAO;
+    @Autowired
+    private ChessTableDAO chessTableDAO;
     @Autowired
     private WSConnectionManager wSConnectionManager;
     @Autowired
@@ -108,7 +114,7 @@ public class MatchServiceImpl implements MatchService {
     @Override
     public JSONObject processChessboardStateRequest(Integer tableId) throws JSONException {
         JSONObject result = new JSONObject();
-        
+
         return result;
     }
 
@@ -143,8 +149,38 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public JSONObject processSitRequest() {
+    public JSONObject processSitRequest(Integer tableId, String color, String username) throws JSONException {
         JSONObject result = new JSONObject();
+        // Only one match can be assigned to table in one time
+        Match match = matchDAO.findMatchByTableId(tableId);
+        // If match is already running then ignore this request
+        if (match == null) {
+            // Match hasnt started yet but there can be other player already sitting here
+            ChessTable chessTable = chessTableDAO.findChessTableById(tableId);
+            User wplayer = chessTable.getWplayer();
+            User bplayer = chessTable.getWplayer();
+            String wplayerName = "";
+            String bplayerName = "";
+            switch (color) {
+                case SupportedWSCommands.WHITE:
+                    if (wplayer == null) {
+                        wplayerName = username;
+                    } else {
+                        wplayerName = wplayer.getLogin();
+                    }
+                    break;
+                case SupportedWSCommands.BLACK:
+                    if (bplayer == null) {
+                        bplayerName = username;
+                    } else {
+                        bplayerName = bplayer.getLogin();
+                    }
+                    break;
+            }
+            result = ClientMessageCreator.createResponseToSitRequestMessage(tableId, wplayerName, bplayerName);
+        } else {
+            // TODO: DC scenario?
+        }
         return result;
     }
 

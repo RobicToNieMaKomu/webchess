@@ -19,9 +19,10 @@ function connect() {
         console.log(event.data);
         if (event.data !== null && event.data !== undefined) {
             // TODO: send message to proper receiver (table)
-            var tableHandler = findTableHandlerById(event.data.tableId);
-            if (tableHandler !== null) {
-                handleIncomingServerMessage(event.data);
+            var response = JSON.parse(event.data);
+            var tableHandler = findTableHandlerById(response['TABLEID']);
+            if (tableHandler !== null && tableHandler !== undefined) {
+                tableHandler.handleIncomingServerMessage(response);
             }
         }
     };

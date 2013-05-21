@@ -9,7 +9,7 @@ function addButtonHandlers() {
 function seatHandlers() {
     $('button#wbutton').click(function(event) {
         if (!$(this).is('.disabled')) {
-            requestSeat('white');
+            requestSeat('WHITE');
         } else {
             alert('No need to click, it\'s disabled.');
         }
@@ -17,7 +17,7 @@ function seatHandlers() {
 
     $('button#bbutton').click(function(event) {
         if (!$(this).is('.disabled')) {
-            requestSeat('black');
+            requestSeat('BLACK');
         } else {
             alert('No need to click, it\'s disabled.');
         }
@@ -31,15 +31,15 @@ function requestSeat(color) {
 }
 
 function requestCurrentRoomState() {
-    var requestPositions = createMessage('ROOM_STATE','');
+    var requestPositions = createMessage('ROOM_STATE', '');
     var jsonString = JSON.stringify(requestPositions);
-    window.opener.sendMessage(jsonString);    
+    window.opener.sendMessage(jsonString);
 }
 
 function requestCurrentChessmenPositions() {
-    var requestPositions = createMessage('CHESSBOARD_STATE','');
+    var requestPositions = createMessage('CHESSBOARD_STATE', '');
     var jsonString = JSON.stringify(requestPositions);
-    window.opener.sendMessage(jsonString);    
+    window.opener.sendMessage(jsonString);
 }
 
 /**
@@ -59,11 +59,62 @@ function createMessage(command, content) {
 
 function handleIncomingServerMessage(msg) {
     console.log(msg);
-    if (msg.COMMAND === '') {
-        
-    } else if (msg.COMMAND === '') {
-        
-    } 
+    if (msg.COMMAND === 'ROOM_STATE') {
+        var wPlayer = msg['PLAYERS']['WPLAYER'];
+        var bPlayer = msg['PLAYERS']['BPLAYER'];
+        var wpTime = msg['TIME']['WPLAYER'];
+        var bpTime = msg['TIME']['BPLAYER'];
+        var spectators = msg['SPECTATORS'];
+        var options = msg['OPTIONS']; // TBD
+        chessboard = msg['CHESSBOARD_STATE'];
+        // Update page according to received data
+        if (!wPlayer.length === 0) {
+            $('#wbutton').text(wPlayer);
+            $('#wbutton').toggleClass('disabled');
+        } else {
+            $('#wbutton').toggleClass('active');
+        }
+        if (!bPlayer.length === 0) {
+            $('#bbutton').text(wPlayer);
+            $('#bbutton').toggleClass('disabled');
+        } else {
+            $('#bbutton').toggleClass('active');
+        }
+        // Set current player's game time
+        $('wplayerTime').text(wpTime);
+        $('bplayerTime').text(bpTime);
+        // Clear spectator list before appending new items
+        $('#myTabContent > #spectators').empty();
+        for (var i = 0; i < spectators; i++) {
+            var spec = '<p>' + spectators[i] + '</p>';
+            $('#myTabContent > #spectators').append(spec);
+        }
+        drawPieces();
+    } else if (msg.COMMAND === 'CHESSBOARD_STATE') {
+        var wpTime = msg['TIME']['WPLAYER'];
+        var bpTime = msg['TIME']['BPLAYER'];
+        chessboard = msg['CHESSBOARD_STATE'];
+        // Update page according to received data
+        $('wplayerTime').text(wpTime);
+        $('bplayerTime').text(bpTime);
+        drawPieces();
+    } else if (msg.COMMAND === 'SIT') {
+        var wPlayer = msg['PLAYERS']['WPLAYER'];
+        var bPlayer = msg['PLAYERS']['BPLAYER'];
+        // Update page according to received data
+        if (!wPlayer.length === 0) {
+            $('#wbutton').text(wPlayer);
+            $('#wbutton').toggleClass('disabled');
+        } else {
+            $('#wbutton').toggleClass('active');
+        }
+        if (!bPlayer.length === 0) {
+            $('#bbutton').text(wPlayer);
+            $('#bbutton').toggleClass('disabled');
+        } else {
+            $('#bbutton').toggleClass('active');
+        }
+    }
 }
 
 

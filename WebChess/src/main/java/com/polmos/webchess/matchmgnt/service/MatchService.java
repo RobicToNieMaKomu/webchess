@@ -52,7 +52,7 @@ public interface MatchService {
 
     JSONObject processReadyRequest();
 
-    JSONObject processSitRequest();
+    JSONObject processSitRequest(Integer tableId, String color, String username) throws JSONException;
 
     JSONObject processSurrenderRequest();
 }

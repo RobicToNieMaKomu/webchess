@@ -156,8 +156,10 @@ public class ChessboardServiceImpl implements ChessboardService {
                     for (int j = 0; j < 8; j++) {
                         ChessmanPojo pojo = chessBoard[i][j];
                         String jsonValue = transformPojoToJSONString(pojo);
-                        String columnName = ColumnEnum.convertColumnPosition(i).getColumnNameLowerCase();
-                        String rowName = RowEnum.convertRowPosition(j).getRowNumber().toString();
+                        //String columnName = ColumnEnum.convertColumnPosition(i).getColumnNameLowerCase();
+                        //String rowName = RowEnum.convertRowPosition(j).getRowNumber().toString();
+                        String columnName = String.valueOf(i);
+                        String rowName = String.valueOf(j);
                         result.put(columnName+rowName, jsonValue);
                     }
                 }
@@ -191,7 +193,7 @@ public class ChessboardServiceImpl implements ChessboardService {
                     result = result.concat("k");
                     break;
                 case PAWN:
-                    result = result.concat("p");
+                    result = result.concat("c");
                     break;
                 case QUEEN:
                     result = result.concat("q");

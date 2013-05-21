@@ -51,7 +51,7 @@ function canvasMouseDown(event) {
 }
 
 function highlightSquare(event) {
-    glassCanvasCtx.clearRect(0, 0, width , height);
+    glassCanvasCtx.clearRect(0, 0, width, height);
     var squareWidth = width / 8;
     var x = Math.floor(getAbsoluteMousePosition(event).x / squareWidth);
     var y = Math.floor(getAbsoluteMousePosition(event).y / squareWidth);
@@ -69,8 +69,8 @@ function getAbsoluteMousePosition(event) {
     var rect = canvas.getBoundingClientRect();
     var xx = event.clientX - rect.left;
     var yy = event.clientY - rect.top;
-    return {x : xx, y : yy};
-} 
+    return {x: xx, y: yy};
+}
 
 
 function highlightField(x, y, squareWidth, hasBackground) {
@@ -120,32 +120,32 @@ function loadPieces() {
     function loadImage() {
         piecesImg = this;
         console.log('pieces loaded!');
-        //var board = {'00': 'wr', '11': 'wc', '77': 'br', '20': 'wp', '40': 'wking', '01': 'wp', '12': 'bp'};
-        //chessboard = JSON.stringify(board);
-        //drawPieces();
     }
 }
 /**
  * Method draws current position on the chessboard.
  */
 function drawPieces() {
-    var parsedChessboard = JSON.parse(chessboard);
-    for (var key in parsedChessboard) {
+    //var parsedChessboard = JSON.parse(chessboard);
+    for (var key in chessboard) {
         // get information about position
         var column = key.charAt(0); //0
         var row = key.charAt(1);    //0
-        var piece = parsedChessboard[key] + SUFFIX;
-        // place piece on the chessboard
-        var squareWidth = width / 8;
-        //drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh)
-        var sprite = piecesData.frames[piece];
-        var sw = sprite.frame.w;
-        var sh = sprite.frame.h;
-        var sx = sprite.frame.x;
-        var sy = sprite.frame.y;
-        var dx = column * squareWidth;
-        var dy = (7 - row) * squareWidth;
-        chessmenCanvasCtx.drawImage(piecesImg, sx, sy, sw, sh, dx, dy, squareWidth, squareWidth);
+        var pieceName = chessboard[key];
+        if (pieceName !== null && pieceName.length > 0) {
+            var piece = pieceName + SUFFIX;
+            // place piece on the chessboard
+            var squareWidth = width / 8;
+            //drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh)
+            var sprite = piecesData.frames[piece];
+            var sw = sprite.frame.w;
+            var sh = sprite.frame.h;
+            var sx = sprite.frame.x;
+            var sy = sprite.frame.y;
+            var dx = column * squareWidth;
+            var dy = (7 - row) * squareWidth;
+            chessmenCanvasCtx.drawImage(piecesImg, sx, sy, sw, sh, dx, dy, squareWidth, squareWidth);
+        }
     }
 }
 

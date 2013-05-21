@@ -31,4 +31,7 @@ public class SupportedWSCommands {
     public static final String TIME = "TIME";
     // Announces end of the game
     public static final String END = "END";
+    // Other commands
+    public static final String WHITE = "WHITE";
+    public static final String BLACK = "BLACK";
 }

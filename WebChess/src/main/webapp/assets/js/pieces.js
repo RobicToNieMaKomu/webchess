@@ -24,7 +24,7 @@ var piecesData = {"frames": {
 	"spriteSourceSize": {"x":0,"y":0,"w":60,"h":60},
 	"sourceSize": {"w":60,"h":60}
 },
-"bp.png":
+"bb.png":
 {
 	"frame": {"x":64,"y":126,"w":60,"h":60},
 	"rotated": false,
@@ -72,7 +72,7 @@ var piecesData = {"frames": {
 	"spriteSourceSize": {"x":0,"y":0,"w":60,"h":60},
 	"sourceSize": {"w":60,"h":60}
 },
-"wp.png":
+"wb.png":
 {
 	"frame": {"x":2,"y":126,"w":60,"h":60},
 	"rotated": false,
