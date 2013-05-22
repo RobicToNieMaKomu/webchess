@@ -96,10 +96,15 @@ public class MatchServiceImpl implements MatchService {
         String bPlayerName = "";
         Set<String> spectators = new HashSet<>();
         if (match == null) {
-            // If there is no match assigned to this table, then associate TEMPLATE 
-            // (default game time, no players, etc ...)
+            // If there is no match assigned to this table then send initial chessboard 
             ChessboardPojo newChessboard = chessboardService.createNewChessboard();
             mapChessboard = chessboardService.transformChessboardTableToMap(newChessboard);
+            // Match hasnt started yet but there can be other player already sitting here
+            ChessTable chessTable = chessTableDAO.findChessTableById(tableId);
+            User bplayer = chessTable.getBplayer();
+            User wplayer = chessTable.getWplayer();
+            bPlayerName = (bplayer != null) ? bplayer.getLogin() : "";
+            wPlayerName = (wplayer != null) ? wplayer.getLogin() : "";
         } else {
             bpTime = match.getBplayerTime();
             wpTime = match.getWplayerTime();
@@ -108,6 +113,43 @@ public class MatchServiceImpl implements MatchService {
             // TBD: spectators
         }
         JSONObject result = ClientMessageCreator.createRoomStateMessage(tableId, wPlayerName, bPlayerName, spectators, mapChessboard, wpTime, bpTime);
+        return result;
+    }
+
+    @Override
+    public JSONObject processSitRequest(Integer tableId, String color, String username) throws JSONException {
+        JSONObject result = new JSONObject();
+        // Only one match can be assigned to table in one time
+        Match match = matchDAO.findMatchByTableId(tableId);
+        // If match is already running then ignore this request
+        if (match == null) {
+            // Match hasnt started yet but there can be other player already sitting here
+            ChessTable chessTable = chessTableDAO.findChessTableById(tableId);
+            User wplayer = chessTable.getWplayer();
+            User bplayer = chessTable.getBplayer();
+            String wplayerName = "";
+            String bplayerName = "";
+            switch (color) {
+                case SupportedWSCommands.WHITE:
+                    wplayerName = (wplayer == null) ? username : wplayer.getLogin();
+                    bplayerName = (bplayer != null) ? bplayer.getLogin() : "";
+                    break;
+                case SupportedWSCommands.BLACK:
+                    bplayerName = (bplayer == null) ? username : bplayer.getLogin();
+                    wplayerName = (wplayer != null) ? wplayer.getLogin() : "";
+                    break;
+            }
+            // TBD: update new user/usernames in chessTable and store it
+            result = ClientMessageCreator.createResponseToSitRequestMessage(tableId, wplayerName, bplayerName);
+        } else {
+            // TODO: DC scenario?
+        }
+        return result;
+    }
+
+    @Override
+    public JSONObject processSurrenderRequest() {
+        JSONObject result = new JSONObject();
         return result;
     }
 
@@ -144,48 +186,6 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     public JSONObject processReadyRequest() {
-        JSONObject result = new JSONObject();
-        return result;
-    }
-
-    @Override
-    public JSONObject processSitRequest(Integer tableId, String color, String username) throws JSONException {
-        JSONObject result = new JSONObject();
-        // Only one match can be assigned to table in one time
-        Match match = matchDAO.findMatchByTableId(tableId);
-        // If match is already running then ignore this request
-        if (match == null) {
-            // Match hasnt started yet but there can be other player already sitting here
-            ChessTable chessTable = chessTableDAO.findChessTableById(tableId);
-            User wplayer = chessTable.getWplayer();
-            User bplayer = chessTable.getWplayer();
-            String wplayerName = "";
-            String bplayerName = "";
-            switch (color) {
-                case SupportedWSCommands.WHITE:
-                    if (wplayer == null) {
-                        wplayerName = username;
-                    } else {
-                        wplayerName = wplayer.getLogin();
-                    }
-                    break;
-                case SupportedWSCommands.BLACK:
-                    if (bplayer == null) {
-                        bplayerName = username;
-                    } else {
-                        bplayerName = bplayer.getLogin();
-                    }
-                    break;
-            }
-            result = ClientMessageCreator.createResponseToSitRequestMessage(tableId, wplayerName, bplayerName);
-        } else {
-            // TODO: DC scenario?
-        }
-        return result;
-    }
-
-    @Override
-    public JSONObject processSurrenderRequest() {
         JSONObject result = new JSONObject();
         return result;
     }

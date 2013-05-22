@@ -4,6 +4,7 @@ $(document).ready(function() {
 
 function addButtonHandlers() {
     seatHandlers();
+    registerWindowCloseEvent();
 }
 
 function seatHandlers() {
@@ -21,6 +22,13 @@ function seatHandlers() {
         } else {
             alert('No need to click, it\'s disabled.');
         }
+    });
+}
+
+function registerWindowCloseEvent() {
+    $(window).bind("beforeunload", function() {
+        var result = confirm("Do you really want to close?");
+        console.log(result);
     });
 }
 
@@ -68,13 +76,13 @@ function handleIncomingServerMessage(msg) {
         var options = msg['OPTIONS']; // TBD
         chessboard = msg['CHESSBOARD_STATE'];
         // Update page according to received data
-        if (!wPlayer.length === 0) {
+        if (wPlayer.length !== 0) {
             $('#wbutton').text(wPlayer);
             $('#wbutton').toggleClass('disabled');
         } else {
             $('#wbutton').toggleClass('active');
         }
-        if (!bPlayer.length === 0) {
+        if (bPlayer.length !== 0) {
             $('#bbutton').text(wPlayer);
             $('#bbutton').toggleClass('disabled');
         } else {
@@ -102,17 +110,17 @@ function handleIncomingServerMessage(msg) {
         var wPlayer = msg['PLAYERS']['WPLAYER'];
         var bPlayer = msg['PLAYERS']['BPLAYER'];
         // Update page according to received data
-        if (!wPlayer.length === 0) {
+        if (wPlayer.length !== 0) {
             $('#wbutton').text(wPlayer);
-            $('#wbutton').toggleClass('disabled');
+            $('#wbutton').addClass('disabled');
         } else {
-            $('#wbutton').toggleClass('active');
+            $('#wbutton').addClass('active');
         }
-        if (!bPlayer.length === 0) {
-            $('#bbutton').text(wPlayer);
-            $('#bbutton').toggleClass('disabled');
+        if (bPlayer.length !== 0) {
+            $('#bbutton').text(bPlayer);
+            $('#bbutton').addClass('disabled');
         } else {
-            $('#bbutton').toggleClass('active');
+            $('#bbutton').addClass('active');
         }
     }
 }

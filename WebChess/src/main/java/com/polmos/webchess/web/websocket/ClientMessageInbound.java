@@ -45,7 +45,7 @@ public class ClientMessageInbound extends MessageInbound {
     @Override
     protected void onClose(int status) {
         Set<Integer> chessTableIDs = wSConnectionManager.getChessTableIDs(this);
-        wSConnectionManager.removeWSConnection(this);
+        wSConnectionManager.removeWSConnection(this, chessTableIDs);
         String message = String.format("* %s %s", username, "has disconnected.");
         // Broadcast message to the all chess rooms in which this client was sitting
         for (Integer chessTableId : chessTableIDs) {
@@ -84,6 +84,10 @@ public class ClientMessageInbound extends MessageInbound {
                     sendJSONMessage(chessboardStateResponse);
                     break;
                 case SupportedWSCommands.ROOM_STATE:
+                     // Add requesting client (with tableId) to temporary maps that will be used for broadcasting
+                    // messages to all users in that room
+                    wSConnectionManager.addNewWSConnection(this, tableId);
+                    // Process CHESSBOARD_STATE request, prepare response and send it back to client
                     JSONObject roomStateResponse = matchService.processRoomStateRequest(tableId);
                     sendJSONMessage(roomStateResponse);
                     break;

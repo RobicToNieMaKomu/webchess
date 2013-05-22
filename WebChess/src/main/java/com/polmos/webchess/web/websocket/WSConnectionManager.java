@@ -15,9 +15,9 @@ public interface WSConnectionManager {
     void addNewWSConnection(ClientMessageInbound wsClientConnection, Integer chessTableId);
 
     /**
-     * Remove unactive ws connection
+     * Remove inactive ws connection
      */
-    void removeWSConnection(ClientMessageInbound wsClientConnection);
+    void removeWSConnection(ClientMessageInbound wsClientConnection, Set<Integer> chessTableIDs);
 
     /**
      * Method returns one or many table ids currently visiting by client (User)

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.CharBuffer;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -55,7 +56,19 @@ public class WSConnectionManagerImpl implements WSConnectionManager {
     }
 
     @Override
-    public void removeWSConnection(ClientMessageInbound wsClientConnection) {
+    public void removeWSConnection(ClientMessageInbound wsClientConnection, Set<Integer> chessTableIDs) {
+        for (Integer tableId : chessTableIDs) {
+            Set<ClientMessageInbound> allPlayersInRoom = chessTableIdToClientsMap.get(tableId);
+            Iterator<ClientMessageInbound> iterator = allPlayersInRoom.iterator();
+            while (iterator.hasNext()) {
+                ClientMessageInbound wsClient = iterator.next();
+                if (wsClient.equals(wsClientConnection)) {
+                    iterator.remove();
+                }
+            }
+        }
+        clientToRoomsMap.remove(wsClientConnection);
+        // TODO: check whether wsConnections is necessary...
         wsConnections.remove(wsClientConnection);
     }
 
@@ -126,6 +139,7 @@ public class WSConnectionManagerImpl implements WSConnectionManager {
 
     @Override
     public void createNewWSBinding(ClientMessageInbound wsClientConnection) {
+        // TODO: check whether this wsConnections is really needed
         this.wsConnections.add(wsClientConnection);
     }
 }
