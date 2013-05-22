@@ -1,4 +1,4 @@
-webchess
+WebChess
 ========
 
-project for training purposes
+Still not the most fabulous application on the web, but practice makes perfect;)
