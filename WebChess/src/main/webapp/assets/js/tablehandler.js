@@ -74,17 +74,23 @@ function handleIncomingServerMessage(msg) {
         var bpTime = msg['TIME']['BPLAYER'];
         var spectators = msg['SPECTATORS'];
         var options = msg['OPTIONS']; // TBD
+        var gameInProgress = msg['IN_PROGRESS'];
         chessboard = msg['CHESSBOARD_STATE'];
+        // Temporary variables that are used to check whether both player are ready
+        var wplayerIsReady = false;
+        var bplayerIsReady = false;
         // Update page according to received data
         if (wPlayer.length !== 0) {
             $('#wbutton').text(wPlayer);
             $('#wbutton').toggleClass('disabled');
+            wplayerIsReady = true;
         } else {
             $('#wbutton').toggleClass('active');
         }
         if (bPlayer.length !== 0) {
             $('#bbutton').text(wPlayer);
             $('#bbutton').toggleClass('disabled');
+            bplayerIsReady = true;
         } else {
             $('#bbutton').toggleClass('active');
         }
@@ -97,7 +103,9 @@ function handleIncomingServerMessage(msg) {
             var spec = '<p>' + spectators[i] + '</p>';
             $('#myTabContent > #spectators').append(spec);
         }
+        // Update canvases
         drawPieces();
+        drawCurtains(wplayerIsReady, bplayerIsReady, gameInProgress);
     } else if (msg.COMMAND === 'CHESSBOARD_STATE') {
         var wpTime = msg['TIME']['WPLAYER'];
         var bpTime = msg['TIME']['BPLAYER'];
@@ -109,20 +117,44 @@ function handleIncomingServerMessage(msg) {
     } else if (msg.COMMAND === 'SIT') {
         var wPlayer = msg['PLAYERS']['WPLAYER'];
         var bPlayer = msg['PLAYERS']['BPLAYER'];
+        // Temporary variables that are used to check whether both player are ready
+        var wplayerIsReady = false;
+        var bplayerIsReady = false;
         // Update page according to received data
         if (wPlayer.length !== 0) {
             $('#wbutton').text(wPlayer);
             $('#wbutton').addClass('disabled');
+            wplayerIsReady = true;
         } else {
             $('#wbutton').addClass('active');
         }
         if (bPlayer.length !== 0) {
             $('#bbutton').text(bPlayer);
             $('#bbutton').addClass('disabled');
+            bplayerIsReady = true;
         } else {
             $('#bbutton').addClass('active');
         }
+        drawCurtains(wplayerIsReady, bplayerIsReady, false);
     }
+}
+/**
+ * If both players are sitting and game hasnt started then allow white to start game.
+ * If players are not ready then show 'Waiting for players' message.
+ * 
+ * @param {Boolean} wplayerIsReady
+ * @param {Boolean} bplayerIsReady
+ * @param {Boolean} gameInProgress
+ */
+function drawCurtains(wplayerIsReady, bplayerIsReady, gameInProgress) {
+    if (!wplayerIsReady || !bplayerIsReady) {
+        //  Draw blue curtain
+        drawWaitingForPlayersCurtain(curtainCanvasCtx);
+    } else if (wplayerIsReady && bplayerIsReady && !gameInProgress) {
+        // Draw green curtain
+        drawPressStartButtonCurtain(curtainCanvasCtx);
+    }
+    // Else do not draw anything because game is in progress
 }
 
 

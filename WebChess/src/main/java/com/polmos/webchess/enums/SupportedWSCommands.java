@@ -13,7 +13,6 @@ public class SupportedWSCommands {
     public static final String MOVE = "MOVE";
     public static final String OPTIONS = "OPTIONS";
     public static final String SIT = "SIT";
-    public static final String READY = "READY";
     public static final String DRAW = "DRAW";
     public static final String SURRENDER = "SURRENDER";
     // Common commands 
@@ -29,9 +28,14 @@ public class SupportedWSCommands {
     public static final String SPECTATORS = "SPECTATORS";
     // Remaining players time
     public static final String TIME = "TIME";
+    // Requests start of the game
+    public static final String START = "START";
     // Announces end of the game
     public static final String END = "END";
     // Other commands
     public static final String WHITE = "WHITE";
     public static final String BLACK = "BLACK";
+    public static final String IN_PROGRESS = "IN_PROGRESS";
+    public static final String TRUE = "TRUE";
+    public static final String FALSE = "FALSE";
 }

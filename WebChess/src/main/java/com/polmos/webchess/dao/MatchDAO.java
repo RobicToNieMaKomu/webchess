@@ -18,4 +18,6 @@ public interface MatchDAO {
     Set<Match> findAllMatchs();
 
     void removeMatch(Match match);
+    
+    Match findMatchInProgressByTableId(Integer tableID);
 }

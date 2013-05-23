@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.polmos.webchess.matchmgnt.entity;
 
 import java.io.Serializable;
@@ -11,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -34,10 +31,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ChessTable.findByTableId", query = "SELECT c FROM ChessTable c WHERE c.tableId = :tableId"),
     @NamedQuery(name = "ChessTable.findByGameStarted", query = "SELECT c FROM ChessTable c WHERE c.gameStarted = :gameStarted"),
     @NamedQuery(name = "ChessTable.findByGameTime", query = "SELECT c FROM ChessTable c WHERE c.gameTime = :gameTime"),
+    @NamedQuery(name = "ChessTable.count", query = "SELECT COUNT(c) FROM ChessTable c"),
     @NamedQuery(name = "ChessTable.findByLastVisitTimestamp", query = "SELECT c FROM ChessTable c WHERE c.lastVisitTimestamp = :lastVisitTimestamp")})
 public class ChessTable implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue
     @Basic(optional = false)
     @Column(name = "table_id")
     private Integer tableId;

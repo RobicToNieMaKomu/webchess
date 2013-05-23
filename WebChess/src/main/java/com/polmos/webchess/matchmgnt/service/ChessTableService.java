@@ -35,10 +35,19 @@ public interface ChessTableService {
      * @param wPlayer user playing white
      * @param bPlayer user playing black
      * @param gameTime game duration
-     * @param lastVisitTimestamp time of game's beggnining
+     * @param lastVisitTimestamp time of game beginning
      */
     void updateStateOfChessTable(Integer tableId, User wPlayer, User bPlayer, Integer gameTime, Date lastVisitTimestamp);
     
+    /**
+     * Simply updates state/status of the chess table.
+     * 
+     * @param tableId
+     * @param wPlayer
+     * @param bPlayer
+     * @param lastVisitTimestamp 
+     */
+    void updateStateOfChessTable(Integer tableId, User wPlayer, User bPlayer, Date lastVisitTimestamp);
     /**
      * Returns chess table or null if table does not exist.
      * 

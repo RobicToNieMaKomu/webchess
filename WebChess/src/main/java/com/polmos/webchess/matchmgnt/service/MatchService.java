@@ -19,8 +19,6 @@ public interface MatchService {
 
     Match findMatchById(final Integer matchId);
 
-    void pushMatchStatusToPlayers(Match match);
-
     // ----- Client requests handling -----
     /**
      * Method creates response containing all necessary information about
@@ -50,7 +48,7 @@ public interface MatchService {
 
     JSONObject processOptionsRequest();
 
-    JSONObject processReadyRequest();
+    JSONObject processStartRequest(Integer tableId, String username) throws JSONException, WebChessException;
 
     JSONObject processSitRequest(Integer tableId, String color, String username) throws JSONException;
 

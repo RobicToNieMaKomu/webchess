@@ -71,5 +71,19 @@ public class MatchDAOImpl implements MatchDAO{
         }
         return result;
     }
+
+    @Transactional
+    @Override
+    public Match findMatchInProgressByTableId(Integer tableID) {
+        Match result = null;
+        Query query = entityManager.createNamedQuery(null);
+        query.setParameter("tableid", tableID);
+        List<Match> resultList = query.getResultList();
+        if (resultList != null && !resultList.isEmpty()) {
+            // ReturnList should always have at most 1 element (0 or 1)
+            result = resultList.get(0);
+        }
+        return result;
+    }
     
 }

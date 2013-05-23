@@ -20,7 +20,7 @@ public interface WSConnectionManager {
     void removeWSConnection(ClientMessageInbound wsClientConnection, Set<Integer> chessTableIDs);
 
     /**
-     * Method returns one or many table ids currently visiting by client (User)
+     * Method returns (one or many) ids of tables currently being visited by client (User)
      *
      * @param clientWS
      * @return table ids

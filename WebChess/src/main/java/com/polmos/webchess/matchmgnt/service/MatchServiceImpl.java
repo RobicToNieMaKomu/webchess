@@ -2,7 +2,6 @@ package com.polmos.webchess.matchmgnt.service;
 
 import com.polmos.webchess.dao.ChessTableDAO;
 import com.polmos.webchess.dao.MatchDAO;
-import com.polmos.webchess.enums.ColorsEnum;
 import com.polmos.webchess.enums.GameStatus;
 import com.polmos.webchess.enums.SupportedWSCommands;
 import com.polmos.webchess.exceptions.WebChessException;
@@ -11,9 +10,12 @@ import com.polmos.webchess.matchmgnt.entity.ChessTable;
 import com.polmos.webchess.matchmgnt.entity.Match;
 import com.polmos.webchess.matchmgnt.entity.User;
 import com.polmos.webchess.service.ChessboardService;
+import com.polmos.webchess.service.UserService;
 import com.polmos.webchess.web.websocket.ClientMessageCreator;
+import com.polmos.webchess.web.websocket.ClientMessageInbound;
 import com.polmos.webchess.web.websocket.WSConnectionManager;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +46,10 @@ public class MatchServiceImpl implements MatchService {
     private MatchExecutorService matchExecutorService;
     @Autowired
     private ChessboardService chessboardService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ChessTableService chessTableService;
 
     public MatchServiceImpl() {
     }
@@ -74,18 +80,6 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public void pushMatchStatusToPlayers(Match match) {
-        try {
-            // Kinda wird methods chain...TODO: fix this
-            Integer tableId = match.getTableid().getTableId();
-            JSONObject message = ClientMessageCreator.createChessboardStateMessage(tableId, null, match.getWplayerTime(), match.getBplayerTime());
-            wSConnectionManager.broadcastToClientsInChessRoom(message.toString(), tableId);
-        } catch (JSONException ex) {
-            logger.error("Error during pushing chessboard state to players:" + ex);
-        }
-    }
-
-    @Override
     public JSONObject processRoomStateRequest(Integer tableId) throws JSONException, WebChessException {
         // Only one match can be assigned to table in one time
         Match match = matchDAO.findMatchByTableId(tableId);
@@ -94,7 +88,12 @@ public class MatchServiceImpl implements MatchService {
         Integer bpTime = DEFAULT_GAME_TIME;
         String wPlayerName = "";
         String bPlayerName = "";
+        Boolean gameInProgress = Boolean.FALSE;
         Set<String> spectators = new HashSet<>();
+        Set<ClientMessageInbound> wsConnections = wSConnectionManager.findWSConnectionsByChessTable(tableId);
+        for (ClientMessageInbound wsi : wsConnections) {
+            spectators.add(wsi.getUsername());
+        }
         if (match == null) {
             // If there is no match assigned to this table then send initial chessboard 
             ChessboardPojo newChessboard = chessboardService.createNewChessboard();
@@ -110,9 +109,13 @@ public class MatchServiceImpl implements MatchService {
             wpTime = match.getWplayerTime();
             wPlayerName = match.getWplayer().getLogin();
             bPlayerName = match.getBplayer().getLogin();
-            // TBD: spectators
+            gameInProgress = Boolean.TRUE;
         }
-        JSONObject result = ClientMessageCreator.createRoomStateMessage(tableId, wPlayerName, bPlayerName, spectators, mapChessboard, wpTime, bpTime);
+        // Pack players' names and times into auxiliary maps
+        Map<String, String> playerNamesMap = createPlayerNamesMap(wPlayerName, bPlayerName);
+        Map<String, Integer> playerTimesMap = createPlayerTimesMap(wpTime, bpTime);
+        // Prepare and send response to all clients in room
+        JSONObject result = ClientMessageCreator.createRoomStateMessage(tableId, playerNamesMap, spectators, mapChessboard, playerTimesMap, gameInProgress);
         return result;
     }
 
@@ -139,10 +142,43 @@ public class MatchServiceImpl implements MatchService {
                     wplayerName = (wplayer != null) ? wplayer.getLogin() : "";
                     break;
             }
-            // TBD: update new user/usernames in chessTable and store it
-            result = ClientMessageCreator.createResponseToSitRequestMessage(tableId, wplayerName, bplayerName);
+            // Update new users/usernames in the chessTable 
+            User whitePlayer = userService.findUserByName(wplayerName);
+            User blackUser = userService.findUserByName(bplayerName);
+            chessTableService.updateStateOfChessTable(tableId, whitePlayer, blackUser, new Date());
+            // Create response for the client
+            result = ClientMessageCreator.createResponseToSitRequestMessage(tableId, createPlayerNamesMap(wplayerName, bplayerName));
         } else {
             // TODO: DC scenario?
+        }
+        return result;
+    }
+
+    @Override
+    public JSONObject processStartRequest(Integer tableId, String username) throws JSONException, WebChessException {
+        JSONObject result = new JSONObject();
+        // Find chessTable with given tableId and associated users
+        ChessTable chessTable = chessTableService.findChessTable(tableId);
+        User wplayer = chessTable.getWplayer();
+        User bplayer = chessTable.getBplayer();
+        Match matchInProgress = matchDAO.findMatchInProgressByTableId(tableId);
+        // If both players sit at the table and there is no game in progress then allow to start a new match
+        if (wplayer != null && bplayer != null && matchInProgress == null) {
+            Integer gameTime = chessTable.getGameTime();
+            startNewMatch(wplayer, bplayer, gameTime);
+            // Find all spectators watching this game
+            Set<String> spectators = new HashSet<>();
+            Set<ClientMessageInbound> wsConnections = wSConnectionManager.findWSConnectionsByChessTable(tableId);
+            for (ClientMessageInbound wsi : wsConnections) {
+                spectators.add(wsi.getUsername());
+            }
+            // Pack all necessary data into auxiliary maps
+            ChessboardPojo newChessboard = chessboardService.createNewChessboard();
+            Map<String, String> mapChessboard = chessboardService.transformChessboardTableToMap(newChessboard);
+            Map<String, String> playerNamesMap = createPlayerNamesMap(wplayer.getLogin(), bplayer.getLogin());
+            Map<String, Integer> playerTimesMap = createPlayerTimesMap(gameTime, gameTime);
+            // Prepare and send response to all clients in room
+            result = ClientMessageCreator.createRoomStateMessage(tableId, playerNamesMap, spectators, mapChessboard, playerTimesMap, Boolean.TRUE);
         }
         return result;
     }
@@ -183,10 +219,18 @@ public class MatchServiceImpl implements MatchService {
         JSONObject result = new JSONObject();
         return result;
     }
-
-    @Override
-    public JSONObject processReadyRequest() {
-        JSONObject result = new JSONObject();
+    
+    private Map<String, String> createPlayerNamesMap(String wplayerName, String bplayerName) {
+        Map<String, String> result = new HashMap<>();
+        result.put(SupportedWSCommands.WPLAYER, wplayerName);
+        result.put(SupportedWSCommands.BPLAYER, bplayerName);
+        return result;
+    }
+    
+    private Map<String, Integer> createPlayerTimesMap(Integer wplayerTime, Integer bplayerTime) {
+        Map<String, Integer> result = new HashMap<>();
+        result.put(SupportedWSCommands.WPLAYER, wplayerTime);
+        result.put(SupportedWSCommands.WPLAYER, bplayerTime);
         return result;
     }
 }

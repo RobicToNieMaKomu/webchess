@@ -155,7 +155,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "com.polmos.webchess.matchmgnt.entity.User[ id=" + id + " ]";
+        return login;
     }
     
 }

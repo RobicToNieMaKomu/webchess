@@ -3,6 +3,7 @@ var SUFFIX = '.png';
 var ctx = null;
 var chessmenCanvasCtx = null;
 var glassCanvasCtx = null;
+var curtainCanvasCtx = null;
 var width = 480;
 var height = 480;
 var piecesImg = null;
@@ -12,17 +13,21 @@ var startY = -1;
 var canvas = null;
 var chessmenCanvas = null;
 var glassCanvas = null;
+var curtainCanvas = null;
 
 $(document).ready(function() {
     // Initialize canvases
     canvas = document.getElementById("chessboardCanvas");
     chessmenCanvas = document.getElementById("chessmenCanvas");
     glassCanvas = document.getElementById("glassCanvas");
+    curtainCanvas = document.getElementById("curtainCanvas");
     // Initialize contex for each canvas
     ctx = canvas.getContext("2d");
     glassCanvasCtx = glassCanvas.getContext("2d");
     chessmenCanvasCtx = chessmenCanvas.getContext("2d");
-    // Add listeners, draw chessbord, load pieces, etc. 
+    curtainCanvasCtx = curtainCanvas.getContext("2d");
+    // Add listeners, draw chessbord, load pieces, etc.
+    drawWaitingForPlayersCurtain(curtainCanvasCtx);
     drawChessboard(ctx, canvas.width);
     loadPieces();
     addMouseHandlers(chessmenCanvas); // ChessmenCanvas because it is the foreground layer
@@ -147,6 +152,32 @@ function drawPieces() {
             chessmenCanvasCtx.drawImage(piecesImg, sx, sy, sw, sh, dx, dy, squareWidth, squareWidth);
         }
     }
+}
+function drawWaitingForPlayersCurtain(ctx) {
+    ctx.clearRect(120, 180, 240, 120);
+    ctx.globalAlpha = 0.95;
+    ctx.fillStyle = '#0772A1';
+    ctx.fillRect(120, 180, 240, 120);
+    ctx.lineWidth='4';
+    ctx.rect(120, 180, 240, 120);
+    ctx.stroke();
+    ctx.font='25px Arial';
+    ctx.fillStyle = 'white';
+    ctx.fillText('Waiting for players', 135, 245);
+}
+
+function drawPressStartButtonCurtain(ctx) {
+    ctx.clearRect(120, 180, 240, 120);
+    ctx.globalAlpha = 0.95;
+    ctx.fillStyle = 'green';
+    ctx.fillRect(120, 180, 240, 120);
+    ctx.lineWidth='4';
+    ctx.rect(120, 180, 240, 120);
+    ctx.stroke();
+    ctx.font='25px Arial';
+    ctx.fillStyle = 'white';
+    ctx.fillText('Click to start', 165, 230);
+    ctx.fillText('the game', 185, 260);
 }
 
 

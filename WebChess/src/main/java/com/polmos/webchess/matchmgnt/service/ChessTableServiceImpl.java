@@ -61,4 +61,16 @@ public class ChessTableServiceImpl implements ChessTableService {
         ChessTable result = chessTableDAO.findChessTableById(tableId);
         return result;
     }
+
+    @Transactional
+    @Override
+    public void updateStateOfChessTable(Integer tableId, User wPlayer, User bPlayer, Date lastVisitTimestamp) {
+        ChessTable chessTable = chessTableDAO.findChessTableById(tableId);
+        // add players and set game duration for this table
+        chessTable.setBplayer(bPlayer);
+        chessTable.setWplayer(wPlayer);
+        chessTable.setLastVisitTimestamp(lastVisitTimestamp);
+        // update state of this table
+        chessTableDAO.updateChessTable(chessTable);
+    }
 }

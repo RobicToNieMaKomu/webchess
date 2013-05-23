@@ -73,7 +73,9 @@ public class ClientMessageInbound extends MessageInbound {
                     break;
                 case SupportedWSCommands.OPTIONS:
                     break;
-                case SupportedWSCommands.READY:
+                case SupportedWSCommands.START:
+                    JSONObject gameStartResponse = matchService.processStartRequest(tableId, username);
+                    wSConnectionManager.broadcastToClientsInChessRoom(gameStartResponse.toString(), tableId);
                     break;
                 case SupportedWSCommands.SIT:
                     JSONObject sitResponse = matchService.processSitRequest(tableId, content, username);

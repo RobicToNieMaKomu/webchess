@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     
     public UserServiceImpl() {
         logger.debug("UserServiceImpl created");
-        userToTableIdsMap = new HashMap<User, List<Integer>>();
+        userToTableIdsMap = new HashMap<>();
     }
 
     @Override
