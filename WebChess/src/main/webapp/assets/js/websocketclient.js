@@ -11,18 +11,22 @@ function connect() {
         alert('WebSocket is not supported by this browser.');
         return;
     }
-    ws.onopen = function() {
-        console.log('WebSocket connection opened.');
+    ws.onopen = function(event) {
+        console.log('WebSocket connection opened');
     };
     ws.onmessage = function(event) {
-        
         console.log(event.data);
         if (event.data !== null && event.data !== undefined) {
-            // TODO: send message to proper receiver (table)
             var response = JSON.parse(event.data);
-            var tableHandler = findTableHandlerById(response['TABLEID']);
-            if (tableHandler !== null && tableHandler !== undefined) {
-                tableHandler.handleIncomingServerMessage(response);
+            var login = response['USERNAME'];
+            if (login !== null && login !== undefined) {
+                console.log('Welcome ' + login);
+                username = login;
+            } else {
+                var tableHandler = findTableHandlerById(response['TABLEID']);
+                if (tableHandler !== null && tableHandler !== undefined) {
+                    tableHandler.handleIncomingServerMessage(response, username);
+                }
             }
         }
     };

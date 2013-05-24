@@ -38,4 +38,5 @@ public class SupportedWSCommands {
     public static final String IN_PROGRESS = "IN_PROGRESS";
     public static final String TRUE = "TRUE";
     public static final String FALSE = "FALSE";
+    public static final String USERNAME = "USERNAME";
 }

@@ -1,6 +1,7 @@
 var sitButton = "<button class='btn btn-small' type='button'>take a sit</button>";
 var buttonInsideColumn = "<td>" + sitButton + "</td>";
 var noTableCreated = -1;
+var username = null;
 var tableHandlers = [];
 function TableWrapper(id, handler) {
     this.id = id,
@@ -56,13 +57,17 @@ function setButtonHandlers() {
 }
 
 function openTable(tableId, color) {
-    var url = "http://localhost:8080/WebChess/table?chessTableId=" + tableId;
-    var myWindow = window.open(url, '', 'width=850,height=600');
-    myWindow.focus();
-    if (null === findTableHandlerById(tableId)) {
-        var windowWrapper = new TableWrapper(tableId, myWindow);
+    // Check whether handler for table with given id already exists
+    var childWindow = findTableHandlerById(tableId);
+    if (null === childWindow) {
+        // If no then create new one
+        var url = "http://localhost:8080/WebChess/table?chessTableId=" + tableId;
+        childWindow = window.open(url, '', 'width=850,height=600');
+        // Create object that wraps tableId and window handler
+        var windowWrapper = new TableWrapper(tableId, childWindow);
         tableHandlers.push(windowWrapper);
     }
+    childWindow.focus();
 }
 
 function findTableHandlerById(id) {
@@ -128,3 +133,22 @@ function createNewTable() {
         console.error("The following error occured: " + textStatus, errorThrown);
     });
 }
+
+function deleteWindowHandler(handler) {
+    var pointer = null;
+    for (var i = 0; i < tableHandlers.length; i++) {
+        if (tableHandlers[i].handler === handler) {
+            pointer = i;
+        }
+    }
+    if (pointer !== null) {
+        tableHandlers.remove(pointer);
+    }
+}
+
+// Array Remove - By John Resig (MIT Licensed)
+Array.prototype.remove = function(from, to) {
+    var rest = this.slice((to || from) + 1 || this.length);
+    this.length = from < 0 ? this.length + from : from;
+    return this.push.apply(this, rest);
+};

@@ -39,7 +39,14 @@ public class ClientMessageInbound extends MessageInbound {
 
     @Override
     protected void onOpen(WsOutbound outbound) {
-        logger.debug("WebSocket for client: " + username + " opened.");
+        try {
+            logger.debug("WebSocket for " + username + " opened.");
+            JSONObject welcomeMsg = new JSONObject();
+            welcomeMsg.put(SupportedWSCommands.USERNAME, username);
+            sendJSONMessage(welcomeMsg);
+        } catch (JSONException ex) {
+            logger.error("An exception occured: " + ex);
+        }
     }
 
     @Override

@@ -28,7 +28,9 @@ function seatHandlers() {
 function registerWindowCloseEvent() {
     $(window).bind("beforeunload", function() {
         var result = confirm("Do you really want to close?");
-        console.log(result);
+        if (result === true) {
+            window.opener.deleteWindowHandler(window);
+        }
     });
 }
 
@@ -65,7 +67,7 @@ function createMessage(command, content) {
     return result;
 }
 
-function handleIncomingServerMessage(msg) {
+function handleIncomingServerMessage(msg, username) {
     console.log(msg);
     if (msg.COMMAND === 'ROOM_STATE') {
         var wPlayer = msg['PLAYERS']['WPLAYER'];
@@ -83,7 +85,7 @@ function handleIncomingServerMessage(msg) {
         if (wPlayer.length !== 0) {
             $('#wbutton').text(wPlayer);
             $('#wbutton').toggleClass('disabled');
-            wplayerIsReady = true;
+            wplayerIsReady = (username === wPlayer) ? true : false;
         } else {
             $('#wbutton').toggleClass('active');
         }
@@ -125,6 +127,7 @@ function handleIncomingServerMessage(msg) {
             $('#wbutton').text(wPlayer);
             $('#wbutton').addClass('disabled');
             wplayerIsReady = true;
+            wplayerIsReady = (username === wPlayer) ? true : false;
         } else {
             $('#wbutton').addClass('active');
         }
