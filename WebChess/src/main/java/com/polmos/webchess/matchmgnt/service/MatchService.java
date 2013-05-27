@@ -15,8 +15,6 @@ public interface MatchService {
 
     List<Match> findAllMatches();
 
-    void startNewMatch(User wplayer, User bplayer, Integer gameTime);
-
     Match findMatchById(final Integer matchId);
 
     // ----- Client requests handling -----

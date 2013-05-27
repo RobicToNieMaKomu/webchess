@@ -52,6 +52,12 @@ function requestCurrentChessmenPositions() {
     window.opener.sendMessage(jsonString);
 }
 
+function requestStartOfTheGame() {
+    var requestStart = createMessage('START', '');
+    var jsonString = JSON.stringify(requestStart);
+    window.opener.sendMessage(jsonString);
+}
+
 /**
  * Creates message that will be sent to the server
  * 
@@ -90,7 +96,7 @@ function handleIncomingServerMessage(msg, username) {
             $('#wbutton').toggleClass('active');
         }
         if (bPlayer.length !== 0) {
-            $('#bbutton').text(wPlayer);
+            $('#bbutton').text(bPlayer);
             $('#bbutton').toggleClass('disabled');
             bplayerIsReady = true;
         } else {
@@ -101,7 +107,7 @@ function handleIncomingServerMessage(msg, username) {
         $('bplayerTime').text(bpTime);
         // Clear spectator list before appending new items
         $('#myTabContent > #spectators').empty();
-        for (var i = 0; i < spectators; i++) {
+        for (var i = 0; i < spectators.length; i++) {
             var spec = '<p>' + spectators[i] + '</p>';
             $('#myTabContent > #spectators').append(spec);
         }

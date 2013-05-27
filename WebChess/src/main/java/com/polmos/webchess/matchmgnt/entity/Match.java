@@ -9,6 +9,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -18,6 +19,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -38,6 +40,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Match implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue
     @Basic(optional = false)
     @Column(name = "match_id")
     private Integer matchId;
@@ -47,7 +50,7 @@ public class Match implements Serializable {
     @Basic(optional = false)
     @Lob
     @Column(name = "chessboard")
-    private byte[] chessboard;
+    private String[][] chessboard;
     @Column(name = "hasended")
     private Boolean hasended;
     @Column(name = "progress")
@@ -72,7 +75,7 @@ public class Match implements Serializable {
         this.matchId = matchId;
     }
 
-    public Match(Integer matchId, int bplayerTime, byte[] chessboard, int wplayerTime) {
+    public Match(Integer matchId, int bplayerTime, String[][] chessboard, int wplayerTime) {
         this.matchId = matchId;
         this.bplayerTime = bplayerTime;
         this.chessboard = chessboard;
@@ -95,11 +98,11 @@ public class Match implements Serializable {
         this.bplayerTime = bplayerTime;
     }
 
-    public byte[] getChessboard() {
+    public String[][] getChessboard() {
         return chessboard;
     }
 
-    public void setChessboard(byte[] chessboard) {
+    public void setChessboard(String[][] chessboard) {
         this.chessboard = chessboard;
     }
 
@@ -142,7 +145,8 @@ public class Match implements Serializable {
     public void setBplayer(User bplayer) {
         this.bplayer = bplayer;
     }
-
+    
+    @JsonIgnore
     public ChessTable getTableid() {
         return tableid;
     }

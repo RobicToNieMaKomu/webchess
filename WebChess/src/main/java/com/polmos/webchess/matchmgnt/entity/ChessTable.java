@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -117,6 +118,7 @@ public class ChessTable implements Serializable {
         this.bplayer = bplayer;
     }
 
+    @JsonIgnore
     public Match getMatch() {
         return match;
     }

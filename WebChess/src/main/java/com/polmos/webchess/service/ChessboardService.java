@@ -12,6 +12,7 @@ public interface ChessboardService {
     ChessboardPojo createNewChessboard();
     ChessboardPojo getDesk();
     void setDesk(ChessboardPojo chessboard);
-    String[] serializeChessboard(ChessboardPojo chessboard);
+    String[] transformChessboardToArray(ChessboardPojo chessboard);
+    String[][] serializeChessboard(ChessboardPojo chessboard);
     Map<String, String> transformChessboardTableToMap(ChessboardPojo chessboard) throws WebChessException;
 }

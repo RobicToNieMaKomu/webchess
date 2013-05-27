@@ -120,7 +120,7 @@ public class ChessboardServiceImpl implements ChessboardService {
     }
 
     @Override
-    public String[] serializeChessboard(ChessboardPojo chessboard) {
+    public String[] transformChessboardToArray(ChessboardPojo chessboard) {
         String[] arrayChessboard = new String[FIELDS_COUNT];
         ChessmanPojo[][] chessBoard = chessboard.getChessBoard();
         for (int i = 0; i < 8; i++) {
@@ -202,8 +202,22 @@ public class ChessboardServiceImpl implements ChessboardService {
                     result = result.concat("r");
                     break;
                 default:
-                    logger.error("Unknown chessman type: " + chessmanType);
+                    logger.debug("Unknown chessman type: " + chessmanType);
                     break;
+            }
+        }
+        return result;
+    }
+    
+    @Override
+    public String[][] serializeChessboard(ChessboardPojo chessboard) {
+        String[][] result = new String[ROW_COUNT][ROW_COUNT];
+        ChessmanPojo[][] chessBoard = chessboard.getChessBoard();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ChessmanPojo chessman = chessBoard[i][j];
+                String jsonValue = transformPojoToJSONString(chessman);
+                result[i][j] = jsonValue;
             }
         }
         return result;

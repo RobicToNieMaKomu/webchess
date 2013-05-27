@@ -58,7 +58,7 @@ public class ChessBoardTest {
     
     @Test
     public void serializeChessboardTest() {
-        String[] serializedChessboard = chessboardService.serializeChessboard(chessboard);
+        String[] serializedChessboard = chessboardService.transformChessboardToArray(chessboard);
         for (int i = 0; i < serializedChessboard.length; i++) {
             logger.debug("field i:"+ i + "="+serializedChessboard[i]);
         }

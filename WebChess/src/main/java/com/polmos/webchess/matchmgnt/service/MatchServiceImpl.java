@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
  * @author RobicToNieMaKomu
  */
 @Service("matchService")
+@Scope(value = "prototype")
 public class MatchServiceImpl implements MatchService {
 
     private static Logger logger = Logger.getLogger(MatchServiceImpl.class);
@@ -60,8 +62,7 @@ public class MatchServiceImpl implements MatchService {
         return result;
     }
 
-    @Override
-    public void startNewMatch(User wplayer, User bplayer, Integer gameTime) {
+    private void startNewMatch(User wplayer, User bplayer, Integer gameTime, ChessboardPojo chessboard, ChessTable chessTable) {
         Match match = new Match();
         match.setWplayer(wplayer);
         match.setBplayer(bplayer);
@@ -69,6 +70,9 @@ public class MatchServiceImpl implements MatchService {
         match.setBplayerTime(gameTime);
         match.setProgress(GameStatus.WHITE_MOVE);
         match.setHasended(false);
+        match.setTableid(chessTable);
+        String[][] serializedChessboard = chessboardService.serializeChessboard(chessboard);
+        match.setChessboard(serializedChessboard);
         Integer matchId = matchDAO.saveMatch(match);
         matchExecutorService.start(matchId);
     }
@@ -110,6 +114,7 @@ public class MatchServiceImpl implements MatchService {
             wPlayerName = match.getWplayer().getLogin();
             bPlayerName = match.getBplayer().getLogin();
             gameInProgress = Boolean.TRUE;
+            // TODO chessboard table to chessboard map
         }
         // Pack players' names and times into auxiliary maps
         Map<String, String> playerNamesMap = createPlayerNamesMap(wPlayerName, bPlayerName);
@@ -162,10 +167,9 @@ public class MatchServiceImpl implements MatchService {
         User wplayer = chessTable.getWplayer();
         User bplayer = chessTable.getBplayer();
         Match matchInProgress = matchDAO.findMatchInProgressByTableId(tableId);
-        // If both players sit at the table and there is no game in progress then allow to start a new match
+        // If both players are siting at the table and there is no game in progress then allow to start a new match
         if (wplayer != null && bplayer != null && matchInProgress == null) {
             Integer gameTime = chessTable.getGameTime();
-            startNewMatch(wplayer, bplayer, gameTime);
             // Find all spectators watching this game
             Set<String> spectators = new HashSet<>();
             Set<ClientMessageInbound> wsConnections = wSConnectionManager.findWSConnectionsByChessTable(tableId);
@@ -177,6 +181,7 @@ public class MatchServiceImpl implements MatchService {
             Map<String, String> mapChessboard = chessboardService.transformChessboardTableToMap(newChessboard);
             Map<String, String> playerNamesMap = createPlayerNamesMap(wplayer.getLogin(), bplayer.getLogin());
             Map<String, Integer> playerTimesMap = createPlayerTimesMap(gameTime, gameTime);
+            startNewMatch(wplayer, bplayer, gameTime, newChessboard, chessTable);
             // Prepare and send response to all clients in room
             result = ClientMessageCreator.createRoomStateMessage(tableId, playerNamesMap, spectators, mapChessboard, playerTimesMap, Boolean.TRUE);
         }

@@ -76,8 +76,9 @@ public class MatchDAOImpl implements MatchDAO{
     @Override
     public Match findMatchInProgressByTableId(Integer tableID) {
         Match result = null;
-        Query query = entityManager.createNamedQuery(null);
-        query.setParameter("tableid", tableID);
+        ChessTable chessTable = entityManager.find(ChessTable.class, tableID);
+        Query query = entityManager.createNamedQuery("Match.findNotEndedByTableId");
+        query.setParameter("tableid", chessTable);
         List<Match> resultList = query.getResultList();
         if (resultList != null && !resultList.isEmpty()) {
             // ReturnList should always have at most 1 element (0 or 1)

@@ -15,6 +15,7 @@ var chessmenCanvas = null;
 var glassCanvas = null;
 var curtainCanvas = null;
 
+
 $(document).ready(function() {
     // Initialize canvases
     canvas = document.getElementById("chessboardCanvas");
@@ -30,15 +31,21 @@ $(document).ready(function() {
     drawWaitingForPlayersCurtain(curtainCanvasCtx);
     drawChessboard(ctx, canvas.width);
     loadPieces();
-    addMouseHandlers(chessmenCanvas); // ChessmenCanvas because it is the foreground layer
+    addMouseHandlers(chessmenCanvas, curtainCanvas); // ChessmenCanvas because it is the foreground layer
     // Finally, request room status (chessboard status, players, game time, etc.)
     requestCurrentRoomState();
 });
 
-function addMouseHandlers(canvas) {
-    canvas.addEventListener('mousedown', canvasMouseDown, false);
-    canvas.addEventListener('mousemove', highlightSquare, false);
-    canvas.addEventListener('mouseup', canvasMouseUp, false);
+function addMouseHandlers(chessmenCanvas, curtainCanvas) {
+    // Listeners bellow are responsible for handling user's basic interactions
+    // concerning game - moving pieces, highlighting fields, etc
+    chessmenCanvas.addEventListener('mousedown', canvasMouseDown, false);
+    chessmenCanvas.addEventListener('mousemove', highlightSquare, false);
+    chessmenCanvas.addEventListener('mouseup', canvasMouseUp, false);
+    // Listeners bellow are reponsible for client interactions concerning 'Start' button/canvas
+    curtainCanvas.addEventListener('mouseover', mouseOverCurtainHandler, false);
+    curtainCanvas.addEventListener('mouseout', mouseOutCurtainHandler, false);
+    curtainCanvas.addEventListener('click', curtainOnClick, false);
 }
 
 function canvasMouseUp() {
@@ -88,7 +95,36 @@ function highlightField(x, y, squareWidth, hasBackground) {
     }
 }
 
+function mouseOverCurtainHandler() {
+    if (gameStatusHolder.readyToStart && !gameStatusHolder.isReadyButtonHighlighted) {
+        curtainCanvasCtx.clearRect(curtainDim.innerX, curtainDim.innerY, curtainDim.innerWidth, curtainDim.innerHeight);
+        curtainCanvasCtx.globalAlpha = 0.95;
+        curtainCanvasCtx.fillStyle = '#00CC00';
+        curtainCanvasCtx.fillRect(curtainDim.innerX, curtainDim.innerY, curtainDim.innerWidth, curtainDim.innerHeight);
+        drawText(curtainCanvasCtx, 'START');
+    }
+}
+
+function mouseOutCurtainHandler() {
+    if (gameStatusHolder.readyToStart === true) {
+        curtainCanvasCtx.clearRect(curtainDim.innerX, curtainDim.innerY, curtainDim.innerWidth, curtainDim.innerHeight);
+        curtainCanvasCtx.globalAlpha = 0.95;
+        curtainCanvasCtx.fillStyle = '#67E667';
+        curtainCanvasCtx.fillRect(curtainDim.innerX, curtainDim.innerY, curtainDim.innerWidth, curtainDim.innerHeight);
+        drawText(curtainCanvasCtx, 'Click to start', 'the game');
+        gameStatusHolder.isReadyButtonHighlighted = false;
+    }
+}
+
+function curtainOnClick() {
+    if (gameStatusHolder.readyToStart === true) {
+        console.log('START req has been sent');
+        requestStartOfTheGame();
+    }
+}
+
 function drawChessboard(ctx, width) {
+    ctx.rect(0, 0, width, height);
     ctx.beginPath();
     var squareWidth = width / 8;
 
@@ -153,32 +189,69 @@ function drawPieces() {
         }
     }
 }
+
 function drawWaitingForPlayersCurtain(ctx) {
     ctx.clearRect(120, 180, 240, 120);
+    ctx.globalAlpha = 0.35;
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, 480, 480);
     ctx.globalAlpha = 0.95;
     ctx.fillStyle = '#0772A1';
     ctx.fillRect(120, 180, 240, 120);
-    ctx.lineWidth='4';
+    ctx.lineWidth = '4';
     ctx.rect(120, 180, 240, 120);
     ctx.stroke();
-    ctx.font='25px Arial';
-    ctx.fillStyle = 'white';
-    ctx.fillText('Waiting for players', 135, 245);
+    drawText(ctx, 'Waiting for players');
+    gameStatusHolder.readyToStart = false;
 }
 
 function drawPressStartButtonCurtain(ctx) {
     ctx.clearRect(120, 180, 240, 120);
+    ctx.globalAlpha = 0.35;
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, 480, 480);
     ctx.globalAlpha = 0.95;
-    ctx.fillStyle = 'green';
+    ctx.fillStyle = '#67E667';
     ctx.fillRect(120, 180, 240, 120);
-    ctx.lineWidth='4';
+    ctx.lineWidth = '4';
     ctx.rect(120, 180, 240, 120);
     ctx.stroke();
-    ctx.font='25px Arial';
-    ctx.fillStyle = 'white';
-    ctx.fillText('Click to start', 165, 230);
-    ctx.fillText('the game', 185, 260);
+    drawText(ctx, 'Click to start', 'the game');
+    gameStatusHolder.readyToStart = true;
 }
 
+function drawText(ctx, txt1, txt2) {
+    ctx.font = '25px Arial';
+    ctx.fillStyle = 'white';
+    if (txt1 === 'START') {
+        ctx.fillText(txt1, curtainDim.txtStartButtonX, curtainDim.txtWaitForPlayersY);
+    } else if (txt1 !== null && txt2 === undefined) {
+        ctx.fillText(txt1, curtainDim.txtWaitForPlayersX, curtainDim.txtWaitForPlayersY);
+    } else {
+        ctx.fillText(txt1, curtainDim.txtLine1ReadyX, curtainDim.txtLine1ReadyY);
+        ctx.fillText(txt2, curtainDim.txtLine2ReadyX, curtainDim.txtLine2ReadyY);
+    }
+}
 
+var curtainDim = {
+    x: 0,
+    y: 0,
+    width: 480,
+    height: 480,
+    innerX: 120,
+    innerY: 180,
+    innerWidth: 240,
+    innerHeight: 120,
+    txtWaitForPlayersX: 135,
+    txtWaitForPlayersY: 245,
+    txtLine1ReadyX: 165,
+    txtLine1ReadyY: 230,
+    txtLine2ReadyX: 185,
+    txtLine2ReadyY: 260,
+    txtStartButtonX: 200
+};
 
+var gameStatusHolder = {
+    readyToStart: false,
+    isReadyButtonHighlighted: false
+};
