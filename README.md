@@ -1,4 +1,6 @@
 WebChess
 ========
+Chess portal where users are allowed to create multiple rooms where can play and chat. Simply Chess.
 
-Still not the most fabulous application on the web, but practice makes perfect;)
+
+Used technologies: (Spring MVC + Hibernate + Thymeleaf + Bootstrap + JS) running on Apache Tomcat + PostgreSQL 
