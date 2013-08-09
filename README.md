@@ -4,3 +4,4 @@ Chess portal where users create game rooms where can play and chat. Each player 
 Simply Chess.
 
 Used technologies: (Spring MVC + Hibernate + Thymeleaf + Bootstrap + JS) running on Apache Tomcat + PostgreSQL
+During game server communicates with clients via WebSockets.
